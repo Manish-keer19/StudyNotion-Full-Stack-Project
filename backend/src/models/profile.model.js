@@ -1,23 +1,25 @@
 import mongoose, { Schema } from "mongoose";
 
 const Profileschema = new Schema({
-     
-    gender:{
-        type:String,
-        
-    },
-    dateOfBirth:{
-        type:String,
-    },
-    contactNumber:{
-        type:String,
-        trim:true,
-    },
-    about:{
-        type:String,
-    }
-   
+  gender: {
+    type: String,
+  },
+  dateOfBirth: {
+    type: String,
+  },
+  contactNumber: {
+    type: String,
+    trim: true,
+  },
+  about: {
+    type: String,
+  },
+  displayName: {
+    type: String,
+  },
+  Profession:{
+    type:String
+  }
 });
 
-
-export const Profile = mongoose.model("Profile",Profileschema);
+export const Profile = mongoose.model("Profile", Profileschema);

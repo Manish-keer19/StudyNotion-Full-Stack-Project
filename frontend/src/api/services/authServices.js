@@ -1,6 +1,5 @@
+import toast from "react-hot-toast";
 import { axiosInstance } from "../axiosInstance";
-import { toast } from "react-hot-toast";
-
 class AuthServices {
   async Signup(userdata) {
     try {
@@ -48,17 +47,37 @@ class AuthServices {
     }
   }
 
-  async updatePassword(password, confirmpassword,token) {
+  async resetPassword(password, confirmpassword, token) {
     try {
       const res = await axiosInstance.post("/auth/resetPassword", {
         password,
         confirmpassword,
-        token
+        token,
       });
       return res.data;
     } catch (error) {
       toast.error("could not change the password");
       console.log("erro while updating the password", error.message);
+    }
+  }
+
+  async updatePassword(data, token) {
+    try {
+      toast.loading("Loading.....");
+      const res = await axiosInstance.post("/auth/updatePassword", data);
+      console.log(res.data);
+      if (res.data.success) {
+        toast.dismiss();
+        toast.success("password has been updated");
+        return res.data;
+      } else {
+        toast.dismiss();
+        toast.error(res.data.message);
+      }
+    } catch (error) {
+      toast.dismiss();
+      toast.error("error while update the password");
+      console.log("error is ", error);
     }
   }
 }

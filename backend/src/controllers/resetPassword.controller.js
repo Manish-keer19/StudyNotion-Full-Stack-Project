@@ -1,3 +1,4 @@
+import { config } from "process";
 import { User } from "../models/user.model.js";
 import { sendMail } from "../utility/sendMail.utils.js";
 import bcrypt from "bcrypt";
@@ -138,6 +139,72 @@ export const resetPassword = async (req, res) => {
       success: false,
       meassage: "could not change the password please try again",
       error,
+    });
+  }
+};
+
+export const updatePassword = async (req, res) => {
+  try {
+    //  fetch the data from req.body
+    const { currentPassword, newPassword } = req.body;
+    console.log("currentPassword", currentPassword);
+    console.log("newPassword", newPassword);
+
+    if (!currentPassword || !newPassword) {
+      return res.json({
+        success: false,
+        message: "all filed must be filled",
+      });
+    }
+    // fetch the user_id
+    const userId = req.user.id;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.json({
+        success: false,
+        message: "user Note found",
+      });
+    }
+
+    console.log("user is ", user);
+    // compare the password
+    const IsPassTrue = await bcrypt.compare(currentPassword, user.password);
+    console.log("is passtrue", IsPassTrue);
+    if (!IsPassTrue) {
+      return res.json({
+        success: false,
+        message: "old password is wrong enter right passsword",
+      });
+    }
+
+    // hashed the password:
+
+    const hashedpassword = await bcrypt.hash(newPassword, 10);
+
+    //  change the password
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        $set: {
+          password: hashedpassword,
+        },
+      },
+      { new: true }
+    );
+    // reuturn res
+    return res.json({
+      success: true,
+      message: "password updated successfully",
+      updatedUser,
+    });
+  } catch (error) {
+    console.log("error in update password", error);
+    res.json({
+      success: false,
+      message: "some error occured during update password",
+      error: error.message,
     });
   }
 };

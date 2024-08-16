@@ -100,6 +100,8 @@ export const Signup = async (req, res) => {
     console.log("confirm_password", confirm_password);
     console.log("otp is ",otp);
 
+    
+
     //   validate the data :
     if (
       !firstName ||
@@ -107,7 +109,8 @@ export const Signup = async (req, res) => {
       !email ||
       !phoneNo ||
       !password ||
-      !confirm_password
+      !confirm_password||
+      !otp
     ) {
       return res.json({
         success: false,
@@ -199,7 +202,7 @@ export const login = async (req, res) => {
     }
 
     // check user exitst or
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email },).populate("additionalDetail").exec();
     if (!user) {
       return res.json({
         success: false,

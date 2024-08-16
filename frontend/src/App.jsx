@@ -13,6 +13,11 @@ import Toast from "./Toast";
 import UpdatePassword from "./components/auth/UpdatePassword";
 import Success_Password from "./components/auth/Success_Password";
 import AboutUs from "./Pages/AboutUs";
+import ErrorPage from "./Pages/ErrorPage";
+import Profile from "./Pages/Profile";
+import PrivateRoute from "./routes/Privateroute";
+import Setting from "./components/cor/Profile/Setting";
+import AddCourse from "./components/cor/dashboard/AddCourse";
 
 function App() {
   const router = createBrowserRouter([
@@ -59,6 +64,39 @@ function App() {
     {
       path: "/success-password",
       element: <Success_Password />,
+    },
+    {
+      path: "*",
+      element: <ErrorPage />,
+    },
+    {
+      path: "/dashboard",
+      children: [
+        {
+          path: "/dashboard/my-profile",
+          element: (
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          ),
+        },
+        {
+          path: "/dashboard/setting",
+          element: (
+            <PrivateRoute>
+              <Setting />
+            </PrivateRoute>
+          ),
+        },
+        {
+          path: "/dashboard/add-course",
+          element: (
+            <PrivateRoute>
+              <AddCourse />
+            </PrivateRoute>
+          ),
+        },
+      ],
     },
   ]);
 

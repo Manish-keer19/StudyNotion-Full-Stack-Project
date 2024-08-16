@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-  changeProfile,
+  changeProfilePicture,
   createProfile,
   updateProfile,
 } from "../controllers/profile.controller.js";
@@ -14,6 +14,6 @@ import {
 export const profileRoute = Router();
 
 // Profile route
-profileRoute.route("/setProfileImage").post(authantication, changeProfile);
+profileRoute.route("/setProfileImage").post(authantication, changeProfilePicture);
 profileRoute.route("/createProfile").post(authantication, createProfile);
 profileRoute.route("/updateProfile").post(authantication, updateProfile);

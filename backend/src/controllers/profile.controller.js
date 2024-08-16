@@ -13,10 +13,30 @@ export const createProfile = async (req, res) => {
 
   try {
     // fetch the data from req.body
-    const { dateOfBirth = "", about = "", phoneNo, gender } = req.body;
+    const {
+      dateOfBirth = "",
+      about = "",
+      phoneNo,
+      gender,
+      displayName,
+      profession,
+    } = req.body;
     // validate the data
-    if (!phoneNo || !gender) {
-      return res.status(400).json({
+    console.log("dateOfBirth", dateOfBirth);
+    console.log("about", about);
+    console.log("phoneNo", phoneNo);
+    console.log("gender", gender);
+    console.log("displayName", displayName);
+    console.log("Profession", profession);
+    if (
+      !phoneNo ||
+      !gender ||
+      !about ||
+      !displayName ||
+      !profession ||
+      !dateOfBirth
+    ) {
+      return res.json({
         succes: false,
         message: "all field are required",
       });
@@ -27,17 +47,20 @@ export const createProfile = async (req, res) => {
       contactNumber: phoneNo,
       about: about,
       gender: gender,
+      displayName: displayName,
+      Profession: profession,
     });
 
-    const updatedProfile = await newProfile.save();
+    const createdProfile = await newProfile.save();
+    console.log("createdProfile", createdProfile);
     // fetch the use id from req.user.id where is filled during login:
-    const userId  = req.user.id;
+    const userId = req.user.id;
     // if entry is created add profile in user's additionalDetails
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.status(400).json({
-        succes: false,
+      return res.json({
+        success: false,
         message: "user note found",
       });
     }
@@ -45,23 +68,27 @@ export const createProfile = async (req, res) => {
     const userDetail = await User.findByIdAndUpdate(
       user._id,
       {
-        $push: {
-          additionalDetail: updatedProfile._id,
+        $set: {
+          additionalDetail: createdProfile._id,
         },
       },
       { new: true }
-    );
+    )
+      .populate("additionalDetail")
+      .exec();
 
+    console.log("userDetail is ", userDetail);
     // return response
 
     return res.status(200).json({
-      succes: true,
+      success: true,
       message: "profile is created succefully",
+      userDetail,
     });
   } catch (error) {
     console.log(error.message);
-    return res.status(400).json({
-      succes: false,
+    return res.json({
+      success: false,
       message: "some error has occured while create profile",
       error: error.message,
     });
@@ -83,13 +110,13 @@ export const updateProfile = async (req, res) => {
     // validate the data
     if (!phoneNo || !gender) {
       return res.status(400).json({
-        succes: false,
+        success: false,
         message: "all fieled are required",
       });
     }
 
     // update the profile in db
-    const userID  = req.user.id;
+    const userID = req.user.id;
     const user = await User.findById(userID);
     const profileId = user.additionalDetail._id;
 
@@ -103,13 +130,13 @@ export const updateProfile = async (req, res) => {
     });
     // return responese
     return res.status(200).json({
-      succes: true,
+      success: true,
       message: "profile has been updated succesfully",
     });
   } catch (error) {
-    console.log("error in update profile",error);
+    console.log("error in update profile", error);
     return res.status(200).json({
-      succes: false,
+      success: false,
       message: "could not update the profile",
       error: error.message,
     });
@@ -131,7 +158,7 @@ export const deleteUser = async (req, res) => {
     const user = await User.findById(userId);
     if (!user) {
       return res.json({
-        succes: false,
+        success: false,
         message: "user is not found",
       });
     }
@@ -142,7 +169,7 @@ export const deleteUser = async (req, res) => {
     await User.findByIdAndDelete(userId);
   } catch (error) {
     return res.status(200).json({
-      succes: false,
+      success: false,
       message: "could not delete the user",
       error: error.message,
     });
@@ -153,18 +180,18 @@ export const deleteUser = async (req, res) => {
 
 // export const update profile
 
-export const changeProfile = async (req, res) => {
+export const changeProfilePicture = async (req, res) => {
   try {
     // fetch the file from req.filese
-    const file  = req.files.file;
-    const userId  = req.user.id;
+    const file = req.files.file;
+    const userId = req.user.id;
     console.log("file is ", file);
     console.log("user id is", userId);
 
     // validate the file
     if (!file) {
       return res.json({
-        succes: false,
+        success: false,
         message: "fille is not present",
       });
     }
@@ -178,18 +205,19 @@ export const changeProfile = async (req, res) => {
         $set: {
           image: responeseCloudinary.secure_url,
         },
-      },{new:true}
+      },
+      { new: true }
     );
 
-    console.log("updated user is ",updateduser);
+    console.log("updated user is ", updateduser);
     return res.json({
-      succes: true,
+      success: true,
       message: "profile picture updated succesfully",
     });
   } catch (error) {
     console.log("erorr is ", error);
     return res.json({
-      succes: false,
+      success: false,
       message: "could not update the profile pictrue",
       error: error.message,
     });

@@ -80,18 +80,18 @@
 //           </div>
 //           <div className="flex gap-4">
 //             <Input
-//               label={"Create Password:"}
+//               label={"Create password:"}
 //               type="password"
 //               width="w-[13vw]"
 //               color="bg-[#161D29]"
-//               placeholder={"Enter Password"}
+//               placeholder={"Enter password"}
 //             />
 //             <Input
-//               label={"Confirm Password:"}
+//               label={"Confirm password:"}
 //               type="password"
 //               width="w-[13vw]"
 //               color="bg-[#161D29]"
-//               placeholder={"Confirm Password"}
+//               placeholder={"Confirm password"}
 //             />
 //           </div>
 //           <button className="bg-[#dded2b] text-[#161D29] p-2 rounded mt-4 w-full"
@@ -116,40 +116,39 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../cor/HomePage/Navbar";
 import Input from "../comman/Input";
 import signupImg from "../../assets/Images/signup.webp";
-import {authServices} from "../../api/services/authServices"
+import { authServices } from "../../api/services/authServices";
+import { useRef } from "react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 function Signup() {
   const [accountType, setaccountType] = useState("Student");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNo, setPhoneNo] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirm_password, setConfirm_password] = useState("");
   const navigate = useNavigate();
+  const ref = useRef();
+  const {
+    register,
+    setError,
+    watch,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm();
 
   const handleUserTypeChange = (type) => {
     setUserType(type);
   };
 
-  const handleCreateAccount = async () => {
-    if (password !== confirm_password) {
-      alert("Passwords do not match");
+  const onsubmit = async (userData) => {
+    if (userData.password !== userData.confirm_password) {
+      alert("passwords do not match");
       return;
     }
-    const userData = {
-      accountType,
-      firstName,
-      lastName,
-      email,
-      phoneNo,
-      password,
-      confirm_password
-    };
-    console.log("userdata is ",userData);
 
+    userData = { ...userData, accountType: accountType };
+    console.log("data is ", userData);
     try {
-     const res =  await authServices.generateOtp(userData.email);
+      toast.success("loading");
+      const res = await authServices.generateOtp(userData.email);
+      console.log("res in singhup", res);
       console.log("otp hase been send to you gmail");
     } catch (error) {
       console.log("error occured to generate otp");
@@ -182,7 +181,7 @@ function Signup() {
               className={`text-white p-2 rounded-full ${
                 accountType === "Student" ? "bg-[#161D29]" : "bg-gray-300"
               }`}
-              onClick={() =>setaccountType("Student")}
+              onClick={() => setaccountType("Student")}
             >
               Student
             </button>
@@ -196,82 +195,184 @@ function Signup() {
             </button>
           </div>
 
-         <form onSubmit={(e) => e.preventDefault()}>
-          <div className="flex flex-col gap-4">
-            <div className="flex gap-4">
-              <Input
-                label={"First Name:"}
-                type="text"
-                width="w-[13vw]"
-                color="bg-[#161D29]"
-                placeholder={"Enter your first name"}
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                autoComplete="given-name"
-              />
-              <Input
-                label={"Last Name:"}
-                type="text"
-                width="w-[13vw]"
-                color="bg-[#161D29]"
-                placeholder={"Enter your last name"}
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                autoComplete= "lastename"
-              />
-            </div>
+          <form onSubmit={handleSubmit(onsubmit)}>
             <div className="flex flex-col gap-4">
-              <Input
-                type="email"
-                placeholder={"Enter your email"}
-                label={"Email Address"}
-                width="w-full"
-                color="bg-[#161D29]"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                autoComplete= "email"
-              />
-              <Input
-                type="text"
-                placeholder={"Enter your number"}
-                label={"Phone Number:"}
-                width="w-full"
-                color="bg-[#161D29]"
-                value={phoneNo}
-                onChange={(e) => setPhoneNo(e.target.value)}
-                autoComplete= "phone no"
-              />
+              <div className="flex gap-4">
+                <div className="flex flex-col">
+                  <Input
+                    label={"First Name:"}
+                    type="text"
+                    width="w-[13vw]"
+                    color={`bg-[#161D29] ${
+                      errors.firstName ? "border-red-500" : ""
+                    }`}
+                    placeholder={"Enter your first name"}
+                    autoComplete="given-name"
+                    ref={ref}
+                    {...register("firstName", {
+                      required: {
+                        value: true,
+                        message: "First name is required",
+                      },
+                    })}
+                  />
+                  {errors.firstName && (
+                    <div className="text-[red] text-sm mt-1">
+                      {errors.firstName.message}
+                    </div>
+                  )}
+                </div>
+                <div className="flex flex-col">
+                  <Input
+                    label={"Last Name:"}
+                    type="text"
+                    width="w-[13vw]"
+                    color={`bg-[#161D29] ${
+                      errors.lastName ? "border-red-500" : ""
+                    }`}
+                    placeholder={"Enter your last name"}
+                    {...register("lastName", {
+                      required: {
+                        value: true,
+                        message: "Last name is required",
+                      },
+                    })}
+                    autoComplete="family-name"
+                  />
+                  {errors.lastName && (
+                    <div className="text-[red] text-sm mt-1">
+                      {errors.lastName.message}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col">
+                  <Input
+                    type="email"
+                    placeholder={"Enter your email"}
+                    label={"Email Address"}
+                    width="w-full"
+                    color={`bg-[#161D29] ${
+                      errors.email ? "border-red-500" : ""
+                    }`}
+                    {...register("email", {
+                      required: {
+                        value: true,
+                        message: "Email is required",
+                      },
+                    })}
+                    autoComplete="email"
+                  />
+                  {errors.email && (
+                    <div className="text-[red] text-sm mt-1">
+                      {errors.email.message}
+                    </div>
+                  )}
+                </div>
+                <div className="flex flex-col">
+                  <Input
+                    type="text"
+                    placeholder={"Enter your number"}
+                    label={"Phone Number:"}
+                    width="w-full"
+                    color={`bg-[#161D29] ${
+                      errors.phoneNo ? "border-red-500" : ""
+                    }`}
+                    {...register("phoneNo", {
+                      required: {
+                        value: true,
+                        message: "Phone number is required",
+                      },
+                      minLength: {
+                        value: 10,
+                        message: "Minimum length should be 10 for phone number",
+                      },
+                      maxLength: {
+                        value: 10,
+                        message: "Maximum length of phone number is 10",
+                      },
+                    })}
+                    autoComplete="tel"
+                  />
+                  {errors.phoneNo && (
+                    <div className="text-[red] text-sm mt-1">
+                      {errors.phoneNo.message}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="flex flex-col">
+                  <Input
+                    label={"Create password:"}
+                    type="password"
+                    width="w-[13vw]"
+                    color={`bg-[#161D29] ${
+                      errors.password ? "border-red-500" : ""
+                    }`}
+                    placeholder={"Enter password"}
+                    {...register("password", {
+                      required: {
+                        value: true,
+                        message: "password is required",
+                      },
+                      maxLength: {
+                        value: 15,
+                        message: "Maximum length of password is 15",
+                      },
+                      minLength: {
+                        value: 3,
+                        message: "Minimum length of password is 3",
+                      },
+                    })}
+                    autoComplete="new-password"
+                  />
+                  {errors.password && (
+                    <div className="text-[red] text-sm mt-1">
+                      {errors.password.message}
+                    </div>
+                  )}
+                </div>
+                <div className="flex flex-col">
+                  <Input
+                    label={"Confirm password:"}
+                    type="password"
+                    width="w-[13vw]"
+                    color={`bg-[#161D29] ${
+                      errors.confirm_password ? "border-red-500" : ""
+                    }`}
+                    placeholder={"Confirm password"}
+                    {...register("confirm_password", {
+                      required: {
+                        value: true,
+                        message: "Confirm password is required",
+                      },
+                      maxLength: {
+                        value: 15,
+                        message: "Maximum length of password is 15",
+                      },
+                      minLength: {
+                        value: 3,
+                        message: "Minimum length of password is 3",
+                      },
+                    })}
+                    autoComplete="new-password"
+                  />
+                  {errors.confirm_password && (
+                    <div className="text-[red] text-sm mt-1">
+                      {errors.confirm_password.message}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <button
+                className="bg-[#dded2b] text-[#161D29] p-2 rounded mt-4 w-full"
+                type="submit"
+              >
+                Create Account
+              </button>
             </div>
-            <div className="flex gap-4">
-              <Input
-                label={"Create Password:"}
-                type="password"
-                width="w-[13vw]"
-                color="bg-[#161D29]"
-                placeholder={"Enter Password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete= "password"
-              />
-              <Input
-                label={"Confirm Password:"}
-                type="password"
-                width="w-[13vw]"
-                color="bg-[#161D29]"
-                placeholder={"Confirm Password"}
-                value={confirm_password}
-                onChange={(e) => setConfirm_password(e.target.value)}
-                autoComplete={"confirm-password"}
-              />
-            </div>
-            <button
-              className="bg-[#dded2b] text-[#161D29] p-2 rounded mt-4 w-full"
-              onClick={handleCreateAccount}
-              type="submit"
-            >
-              Create Account
-            </button>
-          </div>
           </form>
         </div>
         <div className="w-[40%] h-[60vh] mt-[15vh] ml-[5vw]">

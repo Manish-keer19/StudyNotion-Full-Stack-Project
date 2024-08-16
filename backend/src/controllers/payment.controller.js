@@ -3,7 +3,7 @@ import instance from "../config/rozorpay.config..js";
 import { Course } from "../models/courses.model.js";
 import { User } from "../models/user.model.js";
 import { sendMail } from "../utility/sendMail.utils.js";
-import e from "express";
+
 
 // capture the payment and initaite the razorpay order
 export const capturePayment = async (req, res) => {
@@ -39,7 +39,7 @@ export const capturePayment = async (req, res) => {
       }
       // check if user already pay for same course
       const uId = mongoose.Types.ObjectId(userId);
-      if (coureseDetail.studentEnrolled.includes(userId)) {
+      if (coureseDetail.studentsEnrolled.includes(userId)) {
         return res.json({
           succes: false,
           message: "student is already Enrolled",

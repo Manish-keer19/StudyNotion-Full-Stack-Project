@@ -1,21 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
 
 function ContactForm() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNo, setPhoneNo] = useState("");
-  const [message, setMessage] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm();
 
-  const handleSendMessage = () => {
-    const formData = {
-      firstName,
-      lastName,
-      email,
-      phoneNo,
-      message,
-    };
-    console.log("Form data is:", formData);
+  const  onSubmit = (data) => {
+    console.log("data is ", data);
     // Add logic to handle form submission, e.g., send data to an API
   };
 
@@ -28,7 +22,7 @@ function ContactForm() {
             We’d love to hear from you. Please fill out this form.
           </p>
         </div>
-        <form onSubmit={(e) => e.preventDefault()} className="mt-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-6">
           <div className="flex flex-col gap-4">
             <div className="flex gap-4">
               <div className="flex-1">
@@ -40,10 +34,12 @@ function ContactForm() {
                   type="text"
                   placeholder="Enter your first name"
                   className="bg-[#161D29] text-white p-2 rounded mt-1 w-full"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  {...register("firstName", {
+                    required: "First name is required",
+                  })}
                   autoComplete="given-name"
                 />
+                {errors.firstName && <div className="text-[red]">{errors.firstName.message}</div>}
               </div>
               <div className="flex-1">
                 <label htmlFor="lastName" className="block text-gray-700 font-medium">
@@ -54,10 +50,12 @@ function ContactForm() {
                   type="text"
                   placeholder="Enter your last name"
                   className="bg-[#161D29] text-white p-2 rounded mt-1 w-full"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
+                  {...register("lastName", {
+                    required: "Last name is required",
+                  })}
                   autoComplete="family-name"
                 />
+                {errors.lastName && <div className="text-[red]">{errors.lastName.message}</div>}
               </div>
             </div>
             <div className="flex-1">
@@ -69,10 +67,12 @@ function ContactForm() {
                 type="email"
                 placeholder="Enter your email"
                 className="bg-[#161D29] text-white p-2 rounded mt-1 w-full"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                {...register("email", {
+                  required: "Email is required",
+                })}
                 autoComplete="email"
               />
+              {errors.email && <div className="text-[red]">{errors.email.message}</div>}
             </div>
             <div className="flex-1">
               <label htmlFor="phoneNo" className="block text-gray-700 font-medium">
@@ -83,10 +83,20 @@ function ContactForm() {
                 type="text"
                 placeholder="Enter your phone number"
                 className="bg-[#161D29] text-white p-2 rounded mt-1 w-full"
-                value={phoneNo}
-                onChange={(e) => setPhoneNo(e.target.value)}
+                {...register("phoneNo", {
+                  required: "Phone number is required",
+                  minLength: {
+                    value: 10,
+                    message: "Phone number must be at least 10 digits",
+                  },
+                  maxLength:{
+                    value: 10,
+                    message: "Phone number must be exactly 10 digits",
+                  }
+                })}
                 autoComplete="tel"
               />
+              {errors.phoneNo && <div className="text-[red]">{errors.phoneNo.message}</div>}
             </div>
             <div className="flex-1">
               <label htmlFor="message" className="block text-gray-700 font-medium">
@@ -97,15 +107,24 @@ function ContactForm() {
                 placeholder="Enter your message"
                 rows="6"
                 className="resize-none bg-[#161D29] text-white p-2 rounded mt-1 w-full"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                autoComplete="off"
+                {...register("message", {
+                  required: "Message is required",
+                  minLength: {
+                    value: 6,
+                    message: "Message must be at least 6 characters",
+                  },
+                  maxLength: {
+                    value: 200,
+                    message: "Message must be less than 200 characters",
+                  },
+                })}
               />
+              {errors.message && <div className="text-[red]">{errors.message.message}</div>}
             </div>
             <button
-              className="bg-[#dded2b] text-[#161D29] p-2 rounded mt-4 w-full"
-              onClick={handleSendMessage}
+              className={`bg-[#dded2b] text-[#161D29] p-2 rounded mt-4 w-full ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
               type="submit"
+              disabled={isSubmitting}
             >
               Send Message
             </button>

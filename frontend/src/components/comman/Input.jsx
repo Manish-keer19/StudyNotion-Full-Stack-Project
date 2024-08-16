@@ -1,22 +1,40 @@
-import React from 'react';
+import React from "react";
+import { forwardRef } from "react";
 
-const Input = ({ label, type = 'text', placeholder, width = 'w-[40%]', color = 'bg-[#212121]', value, onChange, autoComplete  }) => {
-  return (
-    <div className="w-full">
-      {label && <label htmlFor={name} className="block mb-2 text-gray-700">{label}</label>}
-      <input
-        type={type}
-        placeholder={placeholder}
-        value={value} // Controlled input value
-        onChange={onChange} // Controlled input change handler
-        className={`py-2 px-4 border border-gray-300 rounded-md ${width} ${color} placeholder-gray-500 flex items-start justify-center`}
-        autoComplete={autoComplete}
-      
-  
-      
-      />
-    </div>
-  );
-};
+const Input = forwardRef(
+  (
+    {
+      label,
+      type = "text",
+      placeholder,
+      width = "w-[40%]",
+      color = "bg-[#161d29]",
+      height = "h-[7vh]",
+      value,
+      onChange,
+      autoComplete,
+      ...rest
+    },
+    ref
+  ) => {
+    return (
+      <div className="w-full">
+        {label && (
+          <label htmlFor={name} className="block mb-2 text-gray-700">
+            {label}
+          </label>
+        )}
+        <input
+          type={type}
+          placeholder={placeholder}
+          {...rest}
+          className={`py-2 px-4 border border-gray-300 rounded-md ${width} ${color} ${height} placeholder-gray-500 flex items-start  text-[#c5c7d4] `}
+          autoComplete={autoComplete}
+          ref={ref}
+        />
+      </div>
+    );
+  }
+);
 
 export default Input;

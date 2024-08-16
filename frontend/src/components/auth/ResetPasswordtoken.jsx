@@ -31,7 +31,6 @@
 //       <Navbar />
 //       <div className="w-full h-[70vh] flex items-center justify-center mt-[7vh]">
 
-        
 //         {isEmailSend?(
 //            <div className="w-[35%] h-[75%] flex flex-col gap-5  items-center justify-center">
 //            <div className="flex items-center flex-col justify-center">
@@ -46,7 +45,7 @@
 //            >
 //              Resend Email
 //            </button>
- 
+
 //            <Link to={"/login"}>
 //              <button className="flex items-center justify-center">
 //                <BiLeftArrowAlt /> back to login
@@ -55,7 +54,7 @@
 //          </div>
 //         ):( <div className="w-[35%] h-[75%] flex flex-col gap-5  items-center justify-center">
 //           <div className="flex items-center flex-col justify-center">
-            
+
 //           <h1 className="font-bold text-3xl ">Reset your password</h1>
 //           <p className="w-[30vw] mt-[3vh]">
 //             Have no fear. We'll email you instructions to reset your password.
@@ -72,12 +71,9 @@
 //      <Link to={'/login'}>
 //           <button className="flex items-center justify-center"><BiLeftArrowAlt /> back to login</button>
 //      </Link>
-          
+
 //         </div>)}
 
-
-
-       
 //       </div>
 //     </>
 //   );
@@ -85,9 +81,7 @@
 
 // export default ResetPasswordtoken;
 
-
-
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Navbar from "../cor/HomePage/Navbar";
 import Input from "../comman/Input";
 import { BiLeftArrowAlt } from "react-icons/bi";
@@ -97,23 +91,27 @@ import { authServices } from "../../api/services/authServices";
 import { toast } from "react-hot-toast";
 import HighlightText from "../cor/HomePage/HighlightText";
 import Loader from "../comman/Loader";
+import { useForm } from "react-hook-form";
 
 function ResetPasswordtoken() {
-  const [email, setEmail] = useState("");
   const [isEmailSend, setIsEmailSend] = useState(false);
   const [loading, setLoading] = useState(false);
   const token = useSelector((state) => state.auth.token);
+  let email = "";
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm();
 
-  // if(token){
-  //   console.log("token is ", token);
-  // }
-
-  const handleClick = async () => {
-    console.log("email is ",email);
+  const ref = useRef();
+  const onSubmit = async (data) => {
+    console.log("email is ", data.email);
+    email = data.email;
     setLoading(true);
     try {
-      const data = await authServices.resetPasswordToken(email, token);
-      console.log(data);
+      const res = await authServices.resetPasswordToken(data.email);
+      console.log(res);
       setIsEmailSend(true);
     } catch (error) {
       console.log("error could not generate resetToken");
@@ -134,16 +132,14 @@ function ResetPasswordtoken() {
             <div className="flex items-center flex-col justify-center">
               <h1 className="font-bold text-3xl ">Check Email</h1>
               <p className="w-[30vw] mt-[3vh] text-center">
-                We have sent the reset email to{" "}
-                <HighlightText text={email} />
+                We have sent the reset email to <HighlightText text={email} />
               </p>
             </div>
-            <button
-              className="w-[70%] bg-[yellow] text-black p-2 rounded-lg"
-              onClick={handleClick}
-            >
-              Resend Email
-            </button>
+            <form onSubmit={handleSubmit(onsubmit)}>
+              <button className="w-[70%] bg-[yellow] text-black p-2 rounded-lg">
+                Resend Email
+              </button>
+            </form>
 
             <Link to={"/login"}>
               <button className="flex items-center justify-center">
@@ -161,24 +157,31 @@ function ResetPasswordtoken() {
                 account recovery.
               </p>
             </div>
-            <div className="p-4 w-[86%]">
-              <Input
-                label={"Email Address *"}
-                placeholder={"Enter your email"}
-                width="w-[100%]"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-              />
-            </div>
-            <button
-              className="w-[86%] bg-[yellow] text-black p-2 rounded-lg"
-              onClick={handleClick}
-            >
-              Reset password
-            </button>
-
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="p-4 w-[86%]">
+                <Input
+                  label={"Email Address *"}
+                  placeholder={"Enter your email"}
+                  width="w-[100%]"
+                  ref={ref}
+                  {...register("email", {
+                    required: {
+                      value: true,
+                      message: "email is required",
+                    },
+                  })}
+                />
+                {errors.email && (
+                  <div className="text-[red]">{errors.email.message}</div>
+                )}
+              </div>
+              <button
+                className="w-[86%] bg-[yellow] text-black p-2 rounded-lg"
+                type="submit"
+              >
+                Reset password
+              </button>
+            </form>
             <Link to={"/login"}>
               <button className="flex items-center justify-center">
                 <BiLeftArrowAlt /> back to login
