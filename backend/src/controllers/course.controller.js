@@ -5,96 +5,179 @@ import { Course } from "../models/courses.model.js";
 
 // Create course:
 
+// export const createCourse = async (req, res) => {
+//   try {
+//     // fetch the from req.body;
+//     console.log("files is ",req.files);
+//     const { courseName, courseDetail, price, catagory, whatYouWillLearn } =
+//       req.body;
+
+//     console.log("courseName:", courseName);
+//     console.log("courseDetail:", courseDetail);
+//     console.log("price:", price);
+//     console.log("catagory:", catagory);
+//     console.log("whatYouWillLearn:", whatYouWillLearn);
+//     // fetch the courseThumbnail from file:
+//     const courseThumbnail = req.files.courseThumbnail;
+//     console.log("courseThumbnail is ", courseThumbnail);
+
+//     // validate
+
+//     if (
+//       (!courseName,
+//       !courseDetail || !price || !courseThumbnail || !whatYouWillLearn)
+//     ) {
+//       return res.json({
+//         succes: false,
+//         message: "all feiled are required",
+//       });
+//     }
+
+//     //  check given tag exist or not :
+//     const catagorydetail = await Catagory.findById(catagory);
+//     console.log("catagory detail ", catagorydetail);
+
+//     if (!catagorydetail) {
+//       return res.json({
+//         succes: false,
+//         message: "catagory is not available",
+//       });
+//     }
+
+//     //   check for instructore:
+//     const userid = req.user.id;
+//     console.log("userid ", userid);
+
+//     // upload thumnail on cloudinary:
+
+//     const uploadedcourseThumbnail = await uploadInCloudinary(
+//       courseThumbnail.tempFilePath,
+//       "courseThumbnail"
+//     );
+
+//     //  create new entry in database:
+//     const newCourse = await Course.create({
+//       courseName: courseName,
+//       courseDescription: courseDetail,
+//       courseThumbnail: uploadedcourseThumbnail.secure_url,
+//       instructore: userid,
+//       price: price,
+//       whatYouWillLearn: whatYouWillLearn,
+//       catagory: catagory,
+//     });
+
+//     //   add new course to the user schema of instructore:
+
+//     await User.findOneAndUpdate(
+//       { _id: userid },
+//       {
+//         $push: {
+//           courses: newCourse._id,
+//         },
+//       }
+//     );
+//     //    update the catagory schema:
+//     await Catagory.findOneAndUpdate(
+//       { _id: catagory },
+//       {
+//         $push: {
+//           coureses: newCourse._id,
+//         },
+//       },
+//       { new: true }
+//     );
+
+//     res.json({
+//       succes: true,
+//       message: "course has created succefully",
+//       newCourse,
+//     });
+//   } catch (error) {
+//     console.log("error is", error.message);
+//     res.json({
+//       succes: false,
+//       message: "could not create the course some error",
+//       error: error.message,
+//     });
+//   }
+// };
+
 export const createCourse = async (req, res) => {
   try {
-    // fetch the from req.body;
-    const { coureseName, courseDetail, price, catagory, whatYouWillLearn } =
-      req.body;
+    // Fetch data from req.body and req.files
+    console.log("files are ", req.files);
+    const { courseName, courseDetail, price, catagory, whatYouWillLearn } = req.body;
 
-    console.log("coureseName:", coureseName);
+    console.log("courseName:", courseName);
     console.log("courseDetail:", courseDetail);
     console.log("price:", price);
     console.log("catagory:", catagory);
     console.log("whatYouWillLearn:", whatYouWillLearn);
-    // fetch the thumbnail from file:
-    const thumbnail = req.files.thumbnail;
-    console.log("thumbnail is ", thumbnail);
 
-    // validate
+    // Fetch the courseThumbnail from files
+    const courseThumbnail = req.files?.courseThumbnail;
+    console.log("courseThumbnail is ", courseThumbnail);
 
-    if (
-      (!coureseName, !courseDetail || !price || !thumbnail || !whatYouWillLearn)
-    ) {
-      return res.json({
-        succes: false,
-        message: "all feiled are required",
+    // Validate
+    if (!courseName || !courseDetail || !price || !courseThumbnail || !whatYouWillLearn) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
       });
     }
 
-    //  check given tag exist or not :
+    // Check if the given category exists
     const catagorydetail = await Catagory.findById(catagory);
     console.log("catagory detail ", catagorydetail);
 
     if (!catagorydetail) {
-      return res.json({
-        succes: false,
-        message: "catagory is not available",
+      return res.status(404).json({
+        success: false,
+        message: "Category not found",
       });
     }
 
-    //   check for instructore:
-    const userid = req.user.id;
-    console.log("userid ", userid);
-
-    // upload thumnail on cloudinary:
-
-    const uploadedThumbnail = await uploadInCloudinary(
-      thumbnail.tempFilePath,
-      "thumbnail"
+    // Upload thumbnail to Cloudinary (assuming you have a function to do this)
+    const uploadedcourseThumbnail = await uploadInCloudinary(
+      courseThumbnail.tempFilePath,
+      "courseThumbnail"
     );
 
-    //  create new entry in database:
+    // Create new course in the database
     const newCourse = await Course.create({
-      courseName: coureseName,
+      courseName,
       courseDescription: courseDetail,
-      thumbnail: uploadedThumbnail.secure_url,
-      instructore: userid,
-      price: price,
-      whatYouWillLearn: whatYouWillLearn,
-      catagory:catagory,
+      courseThumbnail: uploadedcourseThumbnail.secure_url,
+      instructore: req.user.id,
+      price,
+      whatYouWillLearn,
+      catagory,
     });
 
-    //   add new course to the user schema of instructore:
-
-    await User.findOneAndUpdate(
-      { _id: userid },
-      {
-        $push: {
-          courses: newCourse._id,
-        },
-      }
+    // Add new course to the user schema of instructor
+    await User.findByIdAndUpdate(
+      req.user.id,
+      { $push: { courses: newCourse._id } },
+      { new: true }
     );
-    //    update the tags schema:
-    await Catagory.findOneAndUpdate(
-      { _id: catagory },
-      {
-        $push: {
-          coureses: newCourse._id,
-        },
-      },
+
+    // Update the category schema
+    await Catagory.findByIdAndUpdate(
+      catagory,
+      { $push: { courses: newCourse._id } },
       { new: true }
     );
 
     res.json({
-      succes: true,
-      message: "course has created succefully",
+      success: true,
+      message: "Course created successfully",
       newCourse,
     });
   } catch (error) {
-    console.log("error is",error.message);
-    res.json({
-      succes: false,
-      message: "could not create the course some error",
+    console.error("error is", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Could not create the course due to an error",
       error: error.message,
     });
   }

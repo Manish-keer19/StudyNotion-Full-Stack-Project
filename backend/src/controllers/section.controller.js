@@ -1,5 +1,7 @@
 import { Section } from "../models/section.model.js";
 import { Course } from "../models/courses.model.js";
+import { User } from "../models/user.model.js";
+import { Subsection } from "../models/subsection.model.js";
 
 // create section controller
 export const creatSection = async (req, res) => {
@@ -11,22 +13,24 @@ export const creatSection = async (req, res) => {
 
   try {
     // fetch the data from req.body
-    const { SectionName, courseId } = req.body;
+    const { sectionName, CourseId } = req.body;
+    console.log("sectionName", sectionName);
+    console.log("CourseId is ", CourseId);
     // validate tha data
-    if (!SectionName || !courseId) {
+    if (!sectionName || !CourseId) {
       return res.json({
-        succes: false,
+        success: false,
         message: "all filled must be required",
       });
     }
     // crete a enry in db in section document:
     const newSection = await Section.create({
-      sectionName: SectionName,
+      sectionName: sectionName,
     });
     // add the section in courese  note:- add kardo section in course ke coursecontent me
 
     const updatedCourse = await Course.findByIdAndUpdate(
-      courseId,
+      CourseId,
       {
         $push: {
           coursecontent: newSection._id,
@@ -36,24 +40,24 @@ export const creatSection = async (req, res) => {
     );
 
     // Retrieve the course and populate sections and subsections
-    const populatedCourse = await Course.findById(courseId);
-    // const populatedCourse = await Course.findById(courseId).populate({
-    //   path: "coursecontent",
-    //   populate: {
-    //     path: "subsection",
-    //   },
-    // });
-
+    // const populatedCourse = await Course.findById(CourseId);
+    const populatedCourse = await Course.findById(CourseId).populate({
+      path: "coursecontent",
+      populate: {
+        path: "Subsection",
+      },
+    });
+    console.log("populated courese", populatedCourse);
     // return res
-    res.json({
-      succes: true,
-      message: "section has beed created succesfully",
+    return res.json({
+      success: true,
+      message: "section has beed created successfully",
       populatedCourse,
     });
   } catch (error) {
     console.log("error in creat section", error);
     return res.json({
-      succes: false,
+      success: false,
       message: "could not create section some error",
       error: error.message,
     });
@@ -69,11 +73,15 @@ export const updateSection = async (req, res) => {
   // return response
   try {
     // fetch the data
-    const { sectionName, sectionId } = req.body;
+    const { sectionName, sectionId, CourseId } = req.body;
+
+    console.log("sectionName", sectionName);
+    console.log("sectionId", sectionId);
+    console.log("CourseId", CourseId);
     // validate the data
-    if (!sectionName || !sectionId) {
+    if (!sectionName || !sectionId || !CourseId) {
       return res.json({
-        succes: false,
+        success: false,
         message: "both fieled are reuquired",
       });
     }
@@ -83,14 +91,21 @@ export const updateSection = async (req, res) => {
       { sectionName: sectionName },
       { new: true }
     );
+    const populatedCourse = await Course.findById(CourseId).populate({
+      path: "coursecontent",
+      populate: {
+        path: "Subsection",
+      },
+    });
     // return response
     return res.json({
-      succes: true,
+      success: true,
       message: "section updated succefully",
+      populatedCourse,
     });
   } catch (error) {
     return res.json({
-      succes: false,
+      success: false,
       message: "could not update the section",
       error: error.message,
     });
@@ -106,18 +121,35 @@ export const deleteSection = async (req, res) => {
 
   try {
     // fetch the sectionId - we are assuming that we are sending sectionId in params;
-    const { sectionId } = req.params;
+    const { sectionId, CourseId } = req.body;
     // delete the section based on it's id in db
     await Section.findByIdAndDelete(sectionId);
     // TODO:- [it will check in Testing]:- Do we need to delete the entry from couresse shcema after delete section
+    // YES WE NEED TO DELETE THE SECTION IN COURSE SCHEMA
+    const updatedUser = await Course.updateOne(
+      { _id: CourseId },
+      {
+        $pull: {
+          coursecontent: sectionId,
+        },
+      }
+    );
     // return res
+
+    const populatedCourse = await Course.findById(CourseId).populate({
+      path: "coursecontent",
+      populate: {
+        path: "Subsection",
+      },
+    });
     return res.status(200).json({
-      succes: true,
+      success: true,
       message: "section has deleted succefullly",
+      populatedCourse,
     });
   } catch (error) {
     return res.json({
-      succes: false,
+      success: false,
       message: "could not delete the section",
       error: error.message,
     });
@@ -138,13 +170,13 @@ export const getAllSection = async (req, res) => {
     // return response
 
     return res.status(200).json({
-      succes: true,
-      message: "all section has been fetched succesfully",
+      success: true,
+      message: "all section has been fetched successfully",
       allSection,
     });
   } catch (error) {
     return res.json({
-      succes: false,
+      success: false,
       message: "could not fetch the section some error",
       error: error.message,
     });

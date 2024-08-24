@@ -13,7 +13,9 @@ const Input = forwardRef(
       value,
       onChange,
       autoComplete,
+      outline,
       ...rest
+      
     },
     ref
   ) => {
@@ -28,7 +30,7 @@ const Input = forwardRef(
           type={type}
           placeholder={placeholder}
           {...rest}
-          className={`py-2 px-4 border border-gray-300 rounded-md ${width} ${color} ${height} placeholder-gray-500 flex items-start  text-[#c5c7d4] `}
+          className={`py-2 px-4 border border-gray-300 rounded-md ${width} ${color} ${height} ${outline}   placeholder-gray-500 flex items-start  text-[#c5c7d4] `}
           autoComplete={autoComplete}
           ref={ref}
         />

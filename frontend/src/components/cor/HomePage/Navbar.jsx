@@ -178,6 +178,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 import { logout } from "../../../features/auth/auth.slice";
 import { removeUser } from "../../../features/Profile/profileslice";
+import { BiLogOut } from "react-icons/bi";
+import { CgProfile } from "react-icons/cg";
+import { removeStage } from "../../../features/course/courseslice";
 
 function Navbar({ color = "bg-[#161D29]" }) {
   const [sublink, setSublink] = useState();
@@ -282,15 +285,18 @@ function Navbar({ color = "bg-[#161D29]" }) {
                 <div className="absolute right-0 mt-2 w-[7vw] bg-[#161d29] text-white rounded-lg shadow-lg z-20 flex top-[8vh] flex-col items-center">
                   <Link
                     to="/dashboard/my-profile"
-                    className="px-4 py-2 hover:bg-gray-700 hover:text-yellow-500 transition duration-200"
+                    className="px-4 py-2 hover:bg-gray-700 hover:text-yellow-500 transition duration-200 flex items-center justify-center gap-2 font-bold"
                     onClick={() => setDropdown(false)}
                   >
+             
+                    <CgProfile size={23}/>
                     Profile
                   </Link>
                   <button
-                    className="px-4 py-2 hover:bg-gray-700 hover:text-yellow-500 transition duration-200"
+                    className="px-4 py-2 hover:bg-gray-700 hover:text-yellow-500 transition duration-200 font-bold flex items-center justify-center gap-2"
                     onClick={handleLogout}
                   >
+                    <BiLogOut size={23}/>
                     Logout
                   </button>
                 </div>

@@ -19,3 +19,9 @@ export const sectionroute = Router();
 sectionroute
   .route("/creatSection")
   .post(authantication, isInstructore, creatSection);
+sectionroute
+  .route("/deleteSection")
+  .post(authantication, isInstructore, deleteSection);
+sectionroute
+  .route("/updateSection")
+  .post(authantication, isInstructore, updateSection);

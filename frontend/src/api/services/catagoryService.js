@@ -1,16 +1,17 @@
-
+import { axiosInstance } from "../axiosInstance";
+import toast from "react-hot-toast";
 
 // Using fetch method
 class CatagoryService {
   async gellAllCatagory(token) {
+    const toastId = toast.loading("catagory fetching...");
     try {
-     
       const response = await fetch(
         import.meta.env.VITE_API_URL + "/catagory/gellAllCatagory",
         {
           method: "GET",
           headers: {
-            Authorization:`Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -19,22 +20,18 @@ class CatagoryService {
       }
 
       const data = await response.json();
+      toast.success("catagory fetched succefully");
+      toast.dismiss(toastId);
       return data;
-   
-
     } catch (error) {
+      toast.dismiss(toastId);
       throw error;
     }
   }
 }
 export const catagoryService = new CatagoryService();
 
-
-
-
 // //  using axios -..*************---->>>
-
-// export const catagoryService = new CatagoryService();
 // import { axiosInstance } from "./axiosInstance";
 
 // class CatagoryService {
@@ -60,7 +57,6 @@ export const catagoryService = new CatagoryService();
 
 //       const data = (await response).json();
 //       return data;
-   
 
 //     } catch (error) {
 //       throw error;
@@ -69,4 +65,3 @@ export const catagoryService = new CatagoryService();
 // }
 
 // export const catagoryService = new CatagoryService();
-

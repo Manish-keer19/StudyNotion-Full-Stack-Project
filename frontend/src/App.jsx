@@ -17,7 +17,9 @@ import ErrorPage from "./Pages/ErrorPage";
 import Profile from "./Pages/Profile";
 import PrivateRoute from "./routes/Privateroute";
 import Setting from "./components/cor/Profile/Setting";
-import AddCourse from "./components/cor/dashboard/AddCourse";
+import AddCourse from "./components/cor/dashboard/addCourse/AddCourse";
+import Mycourse from "./components/cor/dashboard/Mycourse";
+import Cart from "./components/cor/dashboard/Cart";
 
 function App() {
   const router = createBrowserRouter([
@@ -93,6 +95,22 @@ function App() {
           element: (
             <PrivateRoute>
               <AddCourse />
+            </PrivateRoute>
+          ),
+        },
+        {
+          path: "/dashboard/my-courses",
+          element: (
+            <PrivateRoute>
+              <Mycourse />
+            </PrivateRoute>
+          ),
+        },
+        {
+          path: "/dashboard/cart",
+          element: (
+            <PrivateRoute>
+              <Cart/>
             </PrivateRoute>
           ),
         },

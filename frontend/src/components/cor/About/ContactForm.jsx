@@ -87,11 +87,13 @@ function ContactForm() {
                   required: "Phone number is required",
                   minLength: {
                     value: 10,
-                    message: "Phone number must be at least 10 digits",
+                    // message: "Phone number must be at least 10 digits",
+                    message: "chutiya bana raha ke kye 10 digit dal cup chap",
                   },
                   maxLength:{
                     value: 10,
-                    message: "Phone number must be exactly 10 digits",
+                    // message: "Phone number must be exactly 10 digits",
+                    message: "Phone number 10 digit ke hi hote he bap ko mat shikha",
                   }
                 })}
                 autoComplete="tel"

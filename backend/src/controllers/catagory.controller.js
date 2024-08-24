@@ -13,7 +13,7 @@ export const CreateCatagory = async (req, res) => {
     // vallidate the data
     if (!name || !description) {
       return res.json({
-        succes: false,
+        success: false,
         message: "please fill all the filed",
       });
     }
@@ -26,14 +26,14 @@ export const CreateCatagory = async (req, res) => {
     // return response
 
     res.json({
-      succes: true,
+      success: true,
       message: "Catagory created succefully",
       updatedCatagory,
     });
   } catch (error) {
     console.log("erro in createCatagory ",error);
     return res.json({
-      succes: false,
+      success: false,
       message: "some error occured while create Catagory",
       error,
     });
@@ -48,13 +48,13 @@ export const gellAllCatagory = async (req, res) => {
     );
 
     res.json({
-      succes: true,
+      success: true,
       message: "all catagory retrive succefullly",
       allCatagory,
     });
   } catch (error) {
     return res.json({
-      succes: false,
+      success: false,
       message: "could not get Catagory",
       error,
     });
@@ -81,7 +81,7 @@ export const catogoryPageDetails = async (req, res) => {
     // validate the course
     if (!selectedCatagory) {
       return res.json({
-        succes: false,
+        success: false,
         message: "could not found the catagory ",
       });
     }
@@ -94,7 +94,7 @@ export const catogoryPageDetails = async (req, res) => {
     // top selling courses
     // return response
     return res.json({
-      succes: true,
+      success: true,
       message: "all catagory found",
       data: {
         selectedCatagory,
@@ -103,7 +103,7 @@ export const catogoryPageDetails = async (req, res) => {
     });
   } catch (error) {
     return res.json({
-      succes: false,
+      success: false,
       message: "find catagory details",
       error,
     });
