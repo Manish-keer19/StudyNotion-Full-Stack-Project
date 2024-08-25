@@ -17,15 +17,14 @@ export const generateOtp = async (req, res) => {
     // fetch the email from request.body.
     const { email } = req.body;
 
-    console.log("email",email);
+    console.log("email", email);
     // check if user is already registered:
 
-    if(!email){
+    if (!email) {
       return res.json({
-        success:false,
-        message:"email is required",
-        
-    })
+        success: false,
+        message: "email is required",
+      });
     }
 
     const isUserRegistered = await User.findOne({ email });
@@ -98,9 +97,7 @@ export const Signup = async (req, res) => {
     console.log("phoneNo", phoneNo);
     console.log("password", password);
     console.log("confirm_password", confirm_password);
-    console.log("otp is ",otp);
-
-    
+    console.log("otp is ", otp);
 
     //   validate the data :
     if (
@@ -109,7 +106,7 @@ export const Signup = async (req, res) => {
       !email ||
       !phoneNo ||
       !password ||
-      !confirm_password||
+      !confirm_password ||
       !otp
     ) {
       return res.json({
@@ -202,7 +199,9 @@ export const login = async (req, res) => {
     }
 
     // check user exitst or
-    const user = await User.findOne({ email },).populate("additionalDetail").exec();
+    const user = await User.findOne({ email })
+      .populate("additionalDetail")
+      .exec();
     if (!user) {
       return res.json({
         success: false,

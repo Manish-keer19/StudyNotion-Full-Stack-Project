@@ -27,6 +27,7 @@ export default function CreatCourse() {
   const [selectedfile, setselectedfile] = useState();
   const [imagePreview, setImagePreview] = useState();
   const ref = useRef();
+  console.log("selected file bahar me",selectedfile);
 
   const dispatch = useDispatch();
   const { token } = useSelector((state) => state.auth);
@@ -46,11 +47,13 @@ export default function CreatCourse() {
 
     // add the file in form ke data me
     if (selectedfile) {
+      console.log("selected file in onsubmit",selectedfile);
       formData.append("courseThumbnail", selectedfile);
     } else {
       console.log("file ni he bhai");
     }
 
+    console.log("form data is ",formData);
     try {
       const res = await courseService.createCourse(formData, token);
       console.log("res is", res);
@@ -68,6 +71,7 @@ export default function CreatCourse() {
     if (file) {
       setselectedfile(file);
       setImagePreview(URL.createObjectURL(file));
+      console.log("selected file is ",selectedfile);
     }
   };
 

@@ -15,6 +15,7 @@ export const courseSlice = createSlice({
     setCourse: (state, action) => {
       state.course = action.payload;
       if (action.payload) {
+        console.log("action.payload in course slice is ",action.payload);
         localStorage.setItem("course", JSON.stringify(action.payload));
       }
     },

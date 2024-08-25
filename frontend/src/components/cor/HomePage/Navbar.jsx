@@ -288,15 +288,14 @@ function Navbar({ color = "bg-[#161D29]" }) {
                     className="px-4 py-2 hover:bg-gray-700 hover:text-yellow-500 transition duration-200 flex items-center justify-center gap-2 font-bold"
                     onClick={() => setDropdown(false)}
                   >
-             
-                    <CgProfile size={23}/>
+                    <CgProfile size={23} />
                     Profile
                   </Link>
                   <button
                     className="px-4 py-2 hover:bg-gray-700 hover:text-yellow-500 transition duration-200 font-bold flex items-center justify-center gap-2"
                     onClick={handleLogout}
                   >
-                    <BiLogOut size={23}/>
+                    <BiLogOut size={23} />
                     Logout
                   </button>
                 </div>

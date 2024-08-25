@@ -122,8 +122,23 @@ export const deleteSection = async (req, res) => {
   try {
     // fetch the sectionId - we are assuming that we are sending sectionId in params;
     const { sectionId, CourseId } = req.body;
+    const section = await Section.findById(sectionId);
+
+    if (!section) {
+      return {
+        success: false,
+        message: "Section not found",
+      };
+    }
+
+    // Get the list of Subsection IDs
+    const subsectionIds = section.Subsection;
+
+    // Delete all the subsections in this section
+    await Subsection.deleteMany({ _id: { $in: subsectionIds } });
     // delete the section based on it's id in db
     await Section.findByIdAndDelete(sectionId);
+
     // TODO:- [it will check in Testing]:- Do we need to delete the entry from couresse shcema after delete section
     // YES WE NEED TO DELETE THE SECTION IN COURSE SCHEMA
     const updatedUser = await Course.updateOne(
@@ -135,6 +150,7 @@ export const deleteSection = async (req, res) => {
       }
     );
     // return res
+    const subsection = await Subsection.del;
 
     const populatedCourse = await Course.findById(CourseId).populate({
       path: "coursecontent",

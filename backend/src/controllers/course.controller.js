@@ -28,7 +28,7 @@ import { Course } from "../models/courses.model.js";
 //       !courseDetail || !price || !courseThumbnail || !whatYouWillLearn)
 //     ) {
 //       return res.json({
-//         succes: false,
+//         success: false,
 //         message: "all feiled are required",
 //       });
 //     }
@@ -39,7 +39,7 @@ import { Course } from "../models/courses.model.js";
 
 //     if (!catagorydetail) {
 //       return res.json({
-//         succes: false,
+//         success: false,
 //         message: "catagory is not available",
 //       });
 //     }
@@ -88,14 +88,14 @@ import { Course } from "../models/courses.model.js";
 //     );
 
 //     res.json({
-//       succes: true,
+//       success: true,
 //       message: "course has created succefully",
 //       newCourse,
 //     });
 //   } catch (error) {
 //     console.log("error is", error.message);
 //     res.json({
-//       succes: false,
+//       success: false,
 //       message: "could not create the course some error",
 //       error: error.message,
 //     });
@@ -106,7 +106,8 @@ export const createCourse = async (req, res) => {
   try {
     // Fetch data from req.body and req.files
     console.log("files are ", req.files);
-    const { courseName, courseDetail, price, catagory, whatYouWillLearn } = req.body;
+    const { courseName, courseDetail, price, catagory, whatYouWillLearn } =
+      req.body;
 
     console.log("courseName:", courseName);
     console.log("courseDetail:", courseDetail);
@@ -119,7 +120,13 @@ export const createCourse = async (req, res) => {
     console.log("courseThumbnail is ", courseThumbnail);
 
     // Validate
-    if (!courseName || !courseDetail || !price || !courseThumbnail || !whatYouWillLearn) {
+    if (
+      !courseName ||
+      !courseDetail ||
+      !price ||
+      !courseThumbnail ||
+      !whatYouWillLearn
+    ) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
@@ -191,13 +198,13 @@ export const gettAllcourse = async (req, res) => {
       .populate("instructore")
       .exec();
     res.json({
-      succes: true,
+      success: true,
       message: "all courses fetched succefullly",
       allcourses,
     });
   } catch (error) {
     res.json({
-      succes: false,
+      success: false,
       message: "could not get the course some error",
       error: error.message,
     });
@@ -209,46 +216,53 @@ export const gettAllcourse = async (req, res) => {
 export const getCourseFullDetails = async (req, res) => {
   try {
     //  fetch the data from req.body;
-    const { courseId } = req.body;
+    const { CourseId } = req.params; // Extract CourseId from URL parameters
+
+    if (!CourseId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Course ID is required" });
+    }
+    console.log("CourseId", CourseId);
 
     //  validate the course id
 
-    const coureseDetail = await Course.findById(courseId);
+    const coureseDetail = await Course.findById(CourseId);
 
     if (!coureseDetail) {
       return res.json({
-        succes: false,
+        success: false,
         message: "course is invalid",
       });
     }
 
     // find the fulldetail of course:
 
-    const courseFullDetails = await Course.find({ _id: courseId })
-      .populate({
-        path: "instructore",
-        populate: {
-          path: "additionalDetail",
-        },
-      })
-      .populate("ratingAndReveiws")
-      .populate("catagory")
+    const courseFullDetails = await Course.findOne({ _id: CourseId })
+      // .populate({
+      //   path: "instructore",
+      //   populate: {
+      //     path: "additionalDetail",
+      //   },
+      // })
+      // .populate("ratingAndReveiws")
+      // .populate("catagory")
       .populate({
         path: "coursecontent",
         populate: {
-          path: "subsection",
+          path: "Subsection",
         },
       })
       .exec();
 
     return res.json({
-      succes: true,
-      message: "course full detail found succesfully",
+      success: true,
+      message: "course full detail found successfully",
       data: courseFullDetails,
     });
   } catch (error) {
     return res.json({
-      succes: false,
+      success: false,
       message: "could not find the course",
       error: error.message,
     });

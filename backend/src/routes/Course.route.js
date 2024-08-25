@@ -20,5 +20,5 @@ courserouter
   .route("/gettAllcourse")
   .get(authantication, isInstructore, gettAllcourse);
 courserouter
-  .route("/getCourseFullDetails")
+  .route("/getCourseFullDetails/:CourseId")
   .get(authantication, isInstructore, getCourseFullDetails);
