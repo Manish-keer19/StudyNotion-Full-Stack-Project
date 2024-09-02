@@ -44,7 +44,7 @@ function Profile() {
               <div className="flex items-center justify-center gap-6">
                 <div className="w-[6vw] h-[6vw] flex ">
                   <img
-                    className="w-full h-full rounded-full"
+                    className="w-full h-full rounded-full object-cover"
                     src={user.image}
                     alt="profileImg"
                   />

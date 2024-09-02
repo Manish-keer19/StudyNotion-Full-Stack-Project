@@ -11,15 +11,15 @@ function Button({
   width = "w-auto",           // Default width
   outline = "",               // Outline class
   rounded = "rounded-md",     // Default border radius
-  padding = "py-2 px-4",      // Default padding
+  padding = "p-2",      // Default padding
   textSize = "text-sm",       // Default text size
-  hoverEffect = true,         // Default hover effect
+  hoverEffect = false,         // Default hover effect
   disabled = false,           // Default disabled state
   customClasses = "",         // Additional custom classes
   ...rest                     // Spread remaining props
 }) {
   return (
-    <Link to={disabled ? "#" : linkto} className={`w-full sm:w-fit ${width}`}>
+    <Link to={disabled ? "#" : linkto} className={`w-full sm:w-fit ${width}    `}>
       <div
         style={{
           backgroundColor: disabled ? "gray" : color,
@@ -27,7 +27,7 @@ function Button({
           cursor: disabled ? "not-allowed" : "pointer"
         }}
         className={`
-          ${padding} 
+        ${padding} 
           ${rounded} 
           flex items-center justify-center gap-2 
           font-bold ${textSize} 

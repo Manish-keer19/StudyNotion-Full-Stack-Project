@@ -15,7 +15,6 @@ const Input = forwardRef(
       autoComplete,
       outline,
       ...rest
-      
     },
     ref
   ) => {

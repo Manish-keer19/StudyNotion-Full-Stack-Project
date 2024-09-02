@@ -19,7 +19,7 @@ function Sidebar({ setShowLogoutModal }) {
 
   return (
     <div className="bg-[#161D29] min-h-screen w-[15vw] h-full flex flex-col gap-4">
-      <div className=" h-[49vh]  flex flex-col items-cente pt-7">
+      <div className=" h-[49vh] flex flex-col items-cente pt-7">
         {/* <div className='w-full h-[6vh] flex bg-[#3d2a01] items-center justify-center gap-5 rounded-md'>
       <CgProfile size={25}/>
       <h1 className='text-[#ffd60a]'>My Profile</h1>

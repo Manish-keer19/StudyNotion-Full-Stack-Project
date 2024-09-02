@@ -2,13 +2,13 @@ import React from "react";
 import Sidebar from "../../../Pages/Sidebar";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import Navbar from "../../cor/HomePage/Navbar";
+import Navbar from "../HomePage/Navbar";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { BsFillFileEarmarkCheckFill } from "react-icons/bs";
 import { MdDelete } from "react-icons/md";
 import ProgressBar from "@ramonak/react-progress-bar";
 
-function Mycourse() {
+function EnrolledCourses() {
   const [enrolledCourses, setEnrolledCourses] = useState(true);
   const [menu, setMenu] = useState(false);
   return (
@@ -111,4 +111,4 @@ function Mycourse() {
   );
 }
 
-export default Mycourse;
+export default EnrolledCourses;

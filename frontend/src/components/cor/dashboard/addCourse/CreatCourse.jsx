@@ -21,19 +21,38 @@ export default function CreatCourse() {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
+    getValues,
   } = useForm();
 
   const [catagorys, setCatagorys] = useState([]);
   const [selectedfile, setselectedfile] = useState();
   const [imagePreview, setImagePreview] = useState();
   const ref = useRef();
-  console.log("selected file bahar me",selectedfile);
+  console.log("selected file bahar me", selectedfile);
 
   const dispatch = useDispatch();
   const { token } = useSelector((state) => state.auth);
 
+  const { course } = useSelector((state) => state.course);
+  console.log("course detail is ", course);
+
+  if (course) {
+    if (course.isCourseEdited) {
+      console.log("true he bhai course");
+      setValue("courseName", course.courseName);
+      setValue("courseDetail", course.courseDescription);
+      setValue("price", course.price);
+      setValue("catagory", course.catagory);
+      setImagePreview(course.thumbnail);
+      setValue("whatYouWillLearn", course.whatYouWillLearn);
+    }
+  }
   const onsubmit = async (data) => {
     console.log("before submiting form data is ", data);
+
+    const getvalue = getValues();
+    console.log("getvlaues is", getvalue);
     const formData = new FormData();
 
     // apend the fiedls puri filed ko append karo
@@ -47,13 +66,13 @@ export default function CreatCourse() {
 
     // add the file in form ke data me
     if (selectedfile) {
-      console.log("selected file in onsubmit",selectedfile);
+      console.log("selected file in onsubmit", selectedfile);
       formData.append("courseThumbnail", selectedfile);
     } else {
       console.log("file ni he bhai");
     }
 
-    console.log("form data is ",formData);
+    console.log("form data is ", formData);
     try {
       const res = await courseService.createCourse(formData, token);
       console.log("res is", res);
@@ -71,7 +90,7 @@ export default function CreatCourse() {
     if (file) {
       setselectedfile(file);
       setImagePreview(URL.createObjectURL(file));
-      console.log("selected file is ",selectedfile);
+      console.log("selected file is ", selectedfile);
     }
   };
 

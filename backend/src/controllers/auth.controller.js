@@ -228,7 +228,7 @@ export const login = async (req, res) => {
       // crate cookie and send res
       const option = {
         // maxAge: '1h',
-        expiresIn: "2h",
+        expiresIn: "1w",
         httpOnly: true,
         // secure: false, // Set to true if you're using HTTPS
         // sameSite: 'strict',

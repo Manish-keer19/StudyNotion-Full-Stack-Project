@@ -1,5 +1,4 @@
 import React from "react";
-import { useState } from "react";
 import Sidebar from "../../../Pages/Sidebar";
 import Navbar from "../HomePage/Navbar";
 import { IoChevronBackOutline } from "react-icons/io5";
@@ -16,16 +15,10 @@ import { authServices } from "../../../api/services/authServices";
 
 function Setting() {
   const user = useSelector((state) => state.profile.user);
-  console.log("user", user);
-  const userId = user._id;
-  console.log("userId is ", userId);
 
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   // console.log("token in setting",token);
-
-  const [file, setFile] = useState();
-  const [imagePreview, setimagePreview] = useState();
 
   // Use separate useForm instances for each form
   const {
@@ -38,11 +31,6 @@ function Setting() {
     register: registerPassword,
     handleSubmit: handleSubmitPassword,
     formState: { errors: errorsPassword },
-  } = useForm();
-  const {
-    register: registerImg,
-    handleSubmit: handleImgSubmit,
-    formState: { errors: errorsImg },
   } = useForm();
 
   const handleProfileSubmit = async (data) => {
@@ -71,32 +59,6 @@ function Setting() {
     }
   };
 
-  const handleSelectImage = (e) => {
-    const imgFile = e.target.files[0];
-    console.log("imgFile", imgFile);
-    if (imgFile) {
-      setFile(imgFile);
-      setimagePreview(URL.createObjectURL(imgFile));
-
-      console.log("ImgePreview is ", imagePreview);
-    }
-  };
-
-  const oneImgSubmit = async (data) => {
-    console.log("data is ", data);
-
-    try {
-      const res = await profileservice.changeProfileImg({ file }, token);
-      console.log("res after cange PRofile", res);
-      if (res) {
-        dispatch(setUser(res.updateduser));
-      }
-    } catch (error) {
-      console.log("could not create profile in setting", error);
-      toast.error("could not create Profile");
-    }
-  };
-
   return (
     <>
       <Navbar />
@@ -114,38 +76,22 @@ function Setting() {
             <div className="bg-[#161d29] flex gap-6 min-h-[17vh] items-center rounded-lg ">
               <div className="w-[85px] h-[85px] ml-[3vw]">
                 <img
-                  className="w-full h-full rounded-full object-cover"
-                  src={imagePreview ? imagePreview : user.image}
+                  className="w-full h-full rounded-full"
+                  src={user.image}
                   alt="userimg"
                 />
               </div>
               <div className="flex flex-col gap-3 p-2 w-[20vw]">
                 <h1 className="text-[1.3vw]">Change the profile picture</h1>
                 <div className="flex gap-5 items-center ml-[1vw]">
-                  <form
-                    className="flex gap-5"
-                    onSubmit={handleImgSubmit(oneImgSubmit)}
-                  >
-                    <label className="p-3 bg-[#2c333f] text-[#c5c7d4] rounded-lg font-bold cursor-pointer">
-                      Select
-                      <input
-                        // id="file"
-                        className="hidden"
-                        type="file"
-                        onChange={(e) => {
-                          handleSelectImage(e);
-                        }}
-                      />
-                    </label>
-
-                    <button
-                      className="p-3 bg-[yellow] text-[black] rounded-lg font-bold flex items-center justify-center gap-2"
-                      type="submit"
-                    >
-                      Upload
-                      <MdOutlineFileUpload size={25} />
-                    </button>
-                  </form>
+                  <button className="p-3 bg-[#2c333f] text-[#c5c7d4] rounded-lg font-bold">
+                    {" "}
+                    Select
+                  </button>
+                  <button className="p-3 bg-[yellow] text-[black] rounded-lg font-bold flex items-center justify-center gap-2">
+                    Upload
+                    <MdOutlineFileUpload size={25} />
+                  </button>
                 </div>
               </div>
             </div>

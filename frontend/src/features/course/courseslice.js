@@ -5,7 +5,7 @@ const initialState = {
   stage: localStorage.getItem("stage") || 1,
   course: JSON.parse(localStorage.getItem("course")) || null,
   allCourses: JSON.parse(localStorage.getItem("allCourses")) || [],
-  Sections: [],
+  sections: JSON.parse(localStorage.getItem("sections"))||[],
 };
 
 export const courseSlice = createSlice({
@@ -47,8 +47,11 @@ export const courseSlice = createSlice({
       localStorage.setItem("allCourses", JSON.stringify(state.allCourses));
     },
     setSection: (state, action) => {
-      state.Sections = action.payload;
-      console.log("section in courseslice", state.Sections);
+      state.sectionsections = action.payload;
+      if(action.payload){
+        localStorage.setItem("sections",JSON.stringify(action.payload));
+      }
+      console.log("section in courseslice", state.sections);
     },
   },
 });

@@ -154,11 +154,11 @@ export const createCourse = async (req, res) => {
     const newCourse = await Course.create({
       courseName,
       courseDescription: courseDetail,
-      courseThumbnail: uploadedcourseThumbnail.secure_url,
+      thumbnail: uploadedcourseThumbnail.secure_url,
       instructore: req.user.id,
-      price,
-      whatYouWillLearn,
-      catagory,
+      price: price,
+      whatYouWillLearn: whatYouWillLearn,
+      catagory: catagory,
     });
 
     // Add new course to the user schema of instructor

@@ -1,0 +1,46 @@
+<div className="Course">
+  <div className="flex items-center justify-between ">
+    <div className=" flex gap-5 ">
+      <div className="w-[18vw]  h-[29vh]">
+        <img
+          className="w-full h-full object-cover rounded-lg"
+          src="https://images.unsplash.com/photo-1713021559650-62c2613ae6c6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDE4fDZzTVZqVExTa2VRfHxlbnwwfHx8fHw%3D"
+          alt="img"
+        />
+      </div>
+      <div className="flex flex-col w-[30vw]  gap-4">
+        <h1 className="font-bold text-2xl ">
+          introductionn to Design
+        </h1>
+        <p className="text-[#afb2bf] w-[26vw]">
+          This course provides an overview of the design process,
+          design thinking, and basic design principles
+        </p>
+        <h4>Created: April 27, 2023 | 05:15 PM</h4>
+        <div className="text-[#e7c009] w-fit  flex items-center rounded-2xl bg-[#2c333f]">
+          <IoCheckmarkDoneCircle size={25} />
+          <Button
+            text="published"
+            textcolor="#e7c009"
+            width="w-fit"
+            padding="p-2"
+          />
+        </div>
+      </div>
+    </div>
+    <div className="w-[32vw]  flex items-center justify-between mr-[2vw] gap-6 ">
+      <h1 className="">20H 10M</h1>
+      <h1 className="">520</h1>
+      <div className="flex gap-5 ">
+        <RiFileEditFill
+          size={25}
+          className=" hover:text-[#e7c009] cursor-pointer "
+        />
+        <RiDeleteBin6Line
+          size={25}
+          className=" hover:text-[#e7c009]  cursor-pointer "
+        />
+      </div>
+    </div>
+  </div>
+</div>

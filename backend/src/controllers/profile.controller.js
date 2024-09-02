@@ -183,7 +183,7 @@ export const deleteUser = async (req, res) => {
 export const changeProfilePicture = async (req, res) => {
   try {
     // fetch the file from req.filese
-    const file = req.files.file;
+    const file = req.files ? req.files.file : null;
     const userId = req.user.id;
     console.log("file is ", file);
     console.log("user id is", userId);
@@ -199,6 +199,7 @@ export const changeProfilePicture = async (req, res) => {
       file.tempFilePath,
       "manish"
     );
+
     const updateduser = await User.findByIdAndUpdate(
       { _id: userId },
       {
@@ -210,9 +211,11 @@ export const changeProfilePicture = async (req, res) => {
     );
 
     console.log("updated user is ", updateduser);
+    console.log("updated user is ", updateduser);
     return res.json({
       success: true,
       message: "profile picture updated succesfully",
+      updateduser,
     });
   } catch (error) {
     console.log("erorr is ", error);

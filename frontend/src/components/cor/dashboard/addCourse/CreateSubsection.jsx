@@ -18,6 +18,7 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 import Button from "../../HomePage/Button";
 import { courseService } from "../../../../api/services/courseService";
 import { subsectionService } from "../../../../api/services/subsectionService";
+import { MdEditSquare } from "react-icons/md";
 function CreateSubsection() {
   const {
     register,
@@ -42,7 +43,10 @@ function CreateSubsection() {
 
   const dispatch = useDispatch();
 
-  const [sections, setSections] = useState([]);
+  const [sections, setSections] = useState(
+    useSelector((state) => state.course.sections)
+  );
+  console.log("section after usestate ", sections);
   const [editIndex, setEditIndex] = useState(null);
   const [isAddlectureclicked, setIsAddlectureclicked] = useState(false);
   const [selectedfile, setSelectedfile] = useState();
@@ -51,6 +55,7 @@ function CreateSubsection() {
   const [isLectureEditButtonClicked, setIsLectureEditButtonClicked] =
     useState(false);
   const [subSectionId, setSubSectionId] = useState();
+  const [isWorkDone, setIsWorkDone] = useState(false);
 
   const { course } = useSelector((state) => state.course);
   console.log("course before", course);
@@ -92,6 +97,7 @@ function CreateSubsection() {
           toast.success("section has been updated");
           dispatch(setCourse(res.populatedCourse));
           setEditIndex(null);
+          setIsWorkDone(!isWorkDone);
         } else {
           toast.error("could not update  the section");
         }
@@ -109,6 +115,7 @@ function CreateSubsection() {
         if (res.success) {
           toast.success("section has been created");
           dispatch(setCourse(res.populatedCourse));
+          setIsWorkDone(!isWorkDone);
         } else {
           toast.error("could not create the section");
         }
@@ -167,6 +174,7 @@ function CreateSubsection() {
       if (res.success) {
         toast.success("section has been deleted");
         dispatch(setCourse(res.populatedCourse));
+        setIsWorkDone(!isWorkDone);
       } else {
         toast.error("could not delete the section");
       }
@@ -200,7 +208,12 @@ function CreateSubsection() {
       const res = await courseService.getCourseFullDetails(CourseId);
       console.log("getCourseFullDetails is  ", res.data);
       // const data = res.data.toObject();
-      dispatch(setCourse(res.data));
+      const newCourse = {
+        ...res.data,
+        isCourseEdited: false,
+        courseStatus: "Draft",
+      };
+      dispatch(setCourse(newCourse));
       console.log("course is ", course);
     } else {
       console.error("CourseId is undefined");
@@ -209,7 +222,7 @@ function CreateSubsection() {
 
   useEffect(() => {
     getCourseFullDetails();
-  }, []); // Make sure CourseId is in the dependency array if it might change
+  }, [isWorkDone]);
 
   // subsection handler
   const subSectionHandler = async (data) => {
@@ -219,6 +232,8 @@ function CreateSubsection() {
         const updatedSubRes = await subsectionService.updateSubsection(newdata);
         console.log("res is ", updatedSubRes);
         subsectionReset();
+        dispatch(setCourse(course));
+        setIsWorkDone(!isWorkDone);
         setIsAddlectureclicked(false);
       } catch (error) {
         console.log("could not update subsection");
@@ -247,7 +262,9 @@ function CreateSubsection() {
         const subsectionRes = await subsectionService.createSubsection(newData);
         console.log("res is ", subsectionRes);
         subsectionReset();
+        dispatch(setCourse(course));
         setIsAddlectureclicked(false);
+        setIsWorkDone(!isWorkDone);
       } catch (error) {
         console.log("could not create the subsection");
       }
@@ -293,6 +310,8 @@ function CreateSubsection() {
         subSectionId,
       });
       console.log("res is ", deleteres);
+      setIsWorkDone(!isWorkDone);
+      dispatch(setCourse(course));
     } catch (error) {
       console.log("could not delete subsection");
       console.log("error in delete subsecton", error);
@@ -317,9 +336,9 @@ function CreateSubsection() {
 
                 <div className=" flex gap-3">
                   {/* edit icon */}
-                  <MdEdit
+                  <MdEditSquare
                     size={23}
-                    className="cursor-pointer"
+                    className="cursor-pointer hover:text-[yellow]"
                     onClick={() => {
                       handleEdit(i);
                     }}
@@ -328,12 +347,12 @@ function CreateSubsection() {
                   <RiDeleteBin6Line
                     size={23}
                     onClick={() => handleDelete(i)}
-                    className="cursor-pointer"
+                    className="cursor-pointer hover:text-[yellow]"
                   />
                   {/* Dropdown icon */}
                   {item.isDropdownClicked ? (
                     <IoMdArrowDropup
-                      className="cursor-pointer"
+                      className="cursor-pointer hover:text-[yellow]"
                       size={23}
                       onClick={() => {
                         toggleDropdown(i);
@@ -341,7 +360,7 @@ function CreateSubsection() {
                     />
                   ) : (
                     <IoMdArrowDropdown
-                      className="cursor-pointer"
+                      className="cursor-pointer hover:text-[yellow]"
                       size={23}
                       onClick={() => {
                         toggleDropdown(i);
@@ -367,7 +386,7 @@ function CreateSubsection() {
                       {/* edit icon */}
                       <MdEdit
                         size={23}
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:text-[yellow]"
                         onClick={() => {
                           handlerLectureEdit(subsection);
                         }}
@@ -375,7 +394,7 @@ function CreateSubsection() {
                       {/* delete icon */}
                       <RiDeleteBin6Line
                         size={23}
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:text-[yellow]"
                         onClick={() => {
                           handleDeleteSubSection(item._id);
                         }}
@@ -384,7 +403,7 @@ function CreateSubsection() {
                   </div>
                 ))}
                 <button
-                  className="text-[#ffd60a]  flex  gap-2 items-center mt-[2vh] m-5"
+                  className="text-[#ffd60a]  flex  gap-2 items-center mt-[2vh]  ml-[2vw]"
                   onClick={() => {
                     handleLectureForm(item._id);
                   }}
@@ -429,7 +448,7 @@ function CreateSubsection() {
           <div className="w-full bg-[#2c333f] flex p-5 items-center justify-between rounded-lg">
             <h1 className="font-bold">Editing Lecture</h1>
             <ImCross
-              className="cursor-pointer"
+              className="cursor-pointer hover:text-[yellow]"
               onClick={() => {
                 subsectionReset();
                 setvideoPreview(null);
