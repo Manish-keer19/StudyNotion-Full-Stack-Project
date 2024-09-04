@@ -37,22 +37,17 @@ export default function CreatCourse() {
   const { course } = useSelector((state) => state.course);
   console.log("course detail is ", course);
 
-  if (course) {
-    if (course.isCourseEdited) {
-      console.log("true he bhai course");
+  useEffect(() => {
+    if (course && course.isCourseEdited) {
       setValue("courseName", course.courseName);
       setValue("courseDetail", course.courseDescription);
       setValue("price", course.price);
-      setValue("catagory", course.catagory);
       setImagePreview(course.thumbnail);
       setValue("whatYouWillLearn", course.whatYouWillLearn);
     }
-  }
+  }, [course, setValue]);
   const onsubmit = async (data) => {
     console.log("before submiting form data is ", data);
-
-    const getvalue = getValues();
-    console.log("getvlaues is", getvalue);
     const formData = new FormData();
 
     // apend the fiedls puri filed ko append karo

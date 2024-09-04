@@ -15,6 +15,7 @@ import Button from "../../HomePage/Button";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { setCourse, setStage } from "../../../../features/course/courseslice";
+import PublishSetting from "./PublishSetting";
 function AddCourse() {
   const dispatch = useDispatch();
 
@@ -23,19 +24,14 @@ function AddCourse() {
 
   console.log("stage is ", stage);
 
-  const handleback = () => {
-    dispatch(setCourse({ ...course, isCourseEdited: true }));
-    if (stage != 1) {
-      dispatch(setStage(stage - 1));
-    }
-  };
+  
   return (
     <>
       <Navbar />
-      <div className="w-[100vw] min-h-screen flex relative">
+      <div className="w-[100vw]  flex relative ">
         <Sidebar />
 
-        <div className="w-full min-h-[150vh] p-5  relative">
+        <div className="w-full  p-5  relative  min-h-[100vh]">
           <Link
             to={"/dashboard/my-profile"}
             className="flex items-center w-fit h-fit mt-[3vh] ml-[3vw]"
@@ -110,26 +106,10 @@ function AddCourse() {
           </div>
           {stage == 1 && <CreatCourse />}
           {stage == 2 && <CreateSubsection />}
-          {/* {stage == 2 && <CreateSection />} */}
+          {stage == 3 && <PublishSetting/>}
         </div>
-        <div className=" w-full absolute bottom-[15vh] h-[20vh] flex items-center justify-center gap-5 border">
-          <div
-            className="w-[5vw] flex bg-[#161d29] items-center  p-2 rounded-lg justify-center cursor-pointer "
-            onClick={handleback}
-          >
-            <MdOutlineKeyboardArrowLeft size={21} />
-            <Button
-              text="back"
-              textcolor="white"
-              color="#161d29"
-              padding="p-1"
-            />
-          </div>
-          <div className="w-[6vw] flex bg-[yellow] items-center  p-2 rounded-lg justify-center  text-[black] cursor-pointer">
-            <Button text="next" textcolor="black" padding="p-1" />
-            <MdKeyboardArrowRight size={21} />
-          </div>
-        </div>
+       
+        
       </div>
     </>
   );

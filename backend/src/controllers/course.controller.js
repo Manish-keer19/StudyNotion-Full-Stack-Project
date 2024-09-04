@@ -268,3 +268,44 @@ export const getCourseFullDetails = async (req, res) => {
     });
   }
 };
+
+export const getallcourseOfInstructore = async (req, res) => {
+  try {
+    // fetch the userId from req.body
+    const { userId } = req.body;
+    console.log("req.body is", req.body);
+    console.log("userId", userId);
+    // validate the data
+    if (!userId) {
+      return res.json({
+        success: false,
+        message: "userId is null",
+      });
+    }
+    // fetch all the course from db
+    const userData = await User.findById(userId, {}, { new: true })
+      .populate("courses")
+      .exec();
+
+    console.log("userdata is ", userData);
+    if (!userData) {
+      return res.json({
+        success: false,
+        message: "user did could not found",
+      });
+    }
+    return res.json({
+      success: true,
+      message: "Instructure data succesfully",
+      userData,
+    });
+  } catch (error) {
+    console.log("some error occured while fecthing the Instructore detail");
+    console.log("eroror is ", error);
+    return res.json({
+      success: false,
+      message: "error while fetching Instructore data",
+      error: error.message,
+    });
+  }
+};

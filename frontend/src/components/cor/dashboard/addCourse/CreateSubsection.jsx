@@ -9,7 +9,7 @@ import Input from "../../../comman/Input";
 import { useForm } from "react-hook-form";
 import { CiCirclePlus } from "react-icons/ci";
 import { useRef, useState } from "react";
-import { setCourse } from "../../../../features/course/courseslice";
+import { setCourse, setStage } from "../../../../features/course/courseslice";
 import { sectionService } from "../../../../api/services/sectionService";
 import { useSelector, useDispatch } from "react-redux";
 import { ImCross } from "react-icons/im";
@@ -19,7 +19,12 @@ import Button from "../../HomePage/Button";
 import { courseService } from "../../../../api/services/courseService";
 import { subsectionService } from "../../../../api/services/subsectionService";
 import { MdEditSquare } from "react-icons/md";
+import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
+import { MdKeyboardArrowRight } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 function CreateSubsection() {
+  const { stage } = useSelector((state) => state.course);
+  console.log(stage);
   const {
     register,
     handleSubmit,
@@ -318,8 +323,15 @@ function CreateSubsection() {
     }
   };
 
+  const handleback = () => {
+    dispatch(setCourse({ ...course, isCourseEdited: true }));
+    if (stage != 1) {
+      dispatch(setStage(stage - 1));
+    }
+  };
+
   return (
-    <>
+    <div className="min-h-[85vh]  flex flex-col gap-16">
       <div className="w-[35vw] min-h-[20vh] bg-[#161d29]  ml-[4vw] p-5 rounded-md">
         <h1 className="text-2xl ">Course Builder</h1>
         <div className="w-[99%] min-h-[24vh] bg-[#2c333f] rounded-md p-4 m-2 ">
@@ -556,7 +568,21 @@ function CreateSubsection() {
           </form>
         </div>
       )}
-    </>
+
+      <div className=" w-[50%]  flex items-center p-2 justify-center gap-10">
+        <div
+          className="w-[8vw] flex bg-[#161d29] items-center  p-2 rounded-lg justify-center cursor-pointer "
+          onClick={handleback}
+        >
+          <MdOutlineKeyboardArrowLeft size={21} />
+          <Button text="back" textcolor="white" color="#161d29" padding="p-1" />
+        </div>
+        <div className="w-[8vw] flex bg-[yellow] items-center  p-2 rounded-lg justify-center  text-[black] cursor-pointer">
+          <Button text="next" textcolor="black" padding="p-1" />
+          <MdKeyboardArrowRight size={21} />
+        </div>
+      </div>
+    </div>
   );
 }
 

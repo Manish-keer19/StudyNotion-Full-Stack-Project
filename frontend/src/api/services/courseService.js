@@ -85,6 +85,31 @@ class CourseService {
       console.log("Error while fetching the course:", error);
     }
   }
+  async getallcourseOfInstructore(userId) {
+    console.log("userId in courseservice", userId);
+    const toastId = toast.loading("Instructore data feting......");
+    try {
+      const res = await axiosInstance.post(
+        `course/getallcourseOfInstructore`,
+        userId,
+        {
+          timeout: 60000, // Increased timeout
+        }
+      );
+      toast.dismiss(toastId);
+      console.log("res is ", res.data);
+      if (res.data.success) {
+        toast.success("Instructore data feched succesfully");
+        return res.data;
+      } else {
+        toast.error(res.data.message);
+      }
+    } catch (error) {
+      toast.dismiss(toastId);
+      toast.error(error.message);
+      console.log("Error while fetching the instructore data:", error);
+    }
+  }
 }
 
 export const courseService = new CourseService();

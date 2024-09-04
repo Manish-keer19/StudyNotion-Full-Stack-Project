@@ -44,6 +44,10 @@ const coureseSchema = new Schema(
         ref: "User",
       },
     ],
+    courseStatus: {
+      type: String,
+      enum: ["Draft", "Published"],
+    },
   },
   { timestamps: true }
 );
