@@ -4,6 +4,9 @@ import {
   getCourseFullDetails,
   gettAllcourse,
   getallcourseOfInstructore,
+  updateCourse,
+  deleteCourse,
+  updateCourseStatus
 } from "../controllers/course.controller.js";
 
 import {
@@ -26,3 +29,14 @@ courserouter
 courserouter
   .route("/getallcourseOfInstructore")
   .post(authantication, isInstructore, getallcourseOfInstructore);
+courserouter
+  .route("/updateCourse")
+  .post(authantication, isInstructore, updateCourse);
+courserouter
+  .route("/deleteCourse")
+  .post(authantication, isInstructore, deleteCourse);
+  
+courserouter
+  .route("/updateCourseStatus")
+  .post(authantication, isInstructore, updateCourseStatus);
+  

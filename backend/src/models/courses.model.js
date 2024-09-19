@@ -11,6 +11,14 @@ const coureseSchema = new Schema(
       trim: true,
       required: true,
     },
+    tags: {
+      type: String,
+      required: true,
+    },
+    requrement_instruction: {
+      type: String,
+      required:true
+    },
     instructore: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -47,6 +55,7 @@ const coureseSchema = new Schema(
     courseStatus: {
       type: String,
       enum: ["Draft", "Published"],
+      default: "Draft",
     },
   },
   { timestamps: true }

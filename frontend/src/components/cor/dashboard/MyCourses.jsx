@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Navbar from "../HomePage/Navbar";
 import Sidebar from "../../../Pages/Sidebar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../HomePage/Button";
 import { CiCirclePlus } from "react-icons/ci";
 import { RiFileEditFill } from "react-icons/ri";
@@ -9,8 +9,9 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { useState } from "react";
 import { MdCurrencyRupee } from "react-icons/md";
 import { IoCheckmarkDoneCircle } from "react-icons/io5";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { courseService } from "../../../api/services/courseService";
+import { removeCourse, removeStage, setCourse } from "../../../features/course/courseslice";
 function MyCourses() {
   const { user } = useSelector((state) => state.profile);
   //  console.log("user detail in may course is ",user);
@@ -18,7 +19,10 @@ function MyCourses() {
   console.log("userId is ", userId);
 
   const [courses, setCourses] = useState([]);
+  // const [isCourse, setIsCourse] = useState(false)
   console.log("courses is ", courses);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const fetchInstructoreData = async () => {
     try {
@@ -35,6 +39,33 @@ function MyCourses() {
   useEffect(() => {
     fetchInstructoreData();
   }, []);
+
+  const handleEditMycourses = (item) => {
+    console.log("item in my course ", item);
+    const course = { ...item, isCourseEdited: true };
+    console.log("course is ", course);
+    dispatch(setCourse(course));
+    dispatch(removeStage());
+    navigate("/dashboard/add-course");
+  };
+
+  const handleDelete = (CourseId) => {
+    console.log("CourseId is ", CourseId);
+    try {
+      courseService.deleteCourse({ CourseId }).then((res) => {
+        console.log("res is ", res);
+        if (res) {
+          console.log("deleted successfully");
+          dispatch(removeStage());
+          dispatch(removeCourse())
+          fetchInstructoreData();
+        }
+      });
+    } catch (error) {
+      console.log("error in mycourse while fetching instructure data");
+      console.log("error is ", error);
+    }
+  };
 
   return (
     <>
@@ -67,55 +98,65 @@ function MyCourses() {
                 <h1>action</h1>
               </div>
             </div>
-
-            {courses.map((item, i) => (
-              <div className="Course " key={i}>
-                <div className="flex items-center justify-between ">
-                  <div className=" flex gap-5 ">
-                    <div className="w-[18vw]  h-[29vh]">
-                      <img
-                        className="w-full h-full object-cover rounded-lg"
-                        src={item.thumbnail}
-                        alt="img"
-                      />
-                    </div>
-                    <div className="flex flex-col w-[30vw]  gap-4">
-                      <h1 className="font-bold text-2xl ">{item.courseName}</h1>
-                      <p className="text-[#afb2bf] w-[26vw]">
-                        {item.courseDescription}
-                      </p>
-                      <h4>Created: April 27, 2023 | 05:15 PM</h4>
-                      <div className="text-[#e7c009] w-fit  flex items-center rounded-2xl bg-[#2c333f]">
-                        <IoCheckmarkDoneCircle size={25} />
-                        <Button
-                          text="published"
-                          textcolor="#e7c009"
-                          width="w-fit"
-                          padding="p-2"
-                        />
+            
+              <>
+                {courses.map((item, i) => (
+                  <div className="Course " key={i}>
+                    <div className="flex items-center justify-between ">
+                      <div className=" flex gap-5 ">
+                        <div className="w-[18vw]  h-[29vh]">
+                          <img
+                            className="w-full h-full object-cover rounded-lg"
+                            src={item.thumbnail}
+                            alt="img"
+                          />
+                        </div>
+                        <div className="flex flex-col w-[30vw]  gap-4">
+                          <h1 className="font-bold text-2xl ">
+                            {item.courseName}
+                          </h1>
+                          <p className="text-[#afb2bf] w-[26vw]">
+                            {item.courseDescription}
+                          </p>
+                          <h4>Created: April 27, 2023 | 05:15 PM</h4>
+                          <div className="text-[#e7c009] w-fit  flex items-center rounded-2xl bg-[#2c333f]">
+                            <IoCheckmarkDoneCircle size={25} />
+                            <Button
+                              text={item.courseStatus}
+                              textcolor="#e7c009"
+                              width="w-fit"
+                              padding="p-2"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="w-[32vw]  flex items-center justify-between mr-[2vw] gap-6 ">
+                        <h1 className="">20H 10M</h1>
+                        <div className="flex items-center">
+                          <MdCurrencyRupee />
+                          <h1 className="">{item.price}</h1>
+                        </div>
+                        <div className="flex gap-5 ">
+                          <RiFileEditFill
+                            size={25}
+                            className=" hover:text-[#e7c009] cursor-pointer "
+                            onClick={() => {
+                              handleEditMycourses(item);
+                            }}
+                          />
+                          <RiDeleteBin6Line
+                            size={25}
+                            className=" hover:text-[#e7c009]  cursor-pointer "
+                            onClick={() => {
+                              handleDelete(item._id);
+                            }}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div className="w-[32vw]  flex items-center justify-between mr-[2vw] gap-6 ">
-                    <h1 className="">20H 10M</h1>
-                    <div className="flex items-center">
-                      <MdCurrencyRupee />
-                      <h1 className="">{item.price}</h1>
-                    </div>
-                    <div className="flex gap-5 ">
-                      <RiFileEditFill
-                        size={25}
-                        className=" hover:text-[#e7c009] cursor-pointer "
-                      />
-                      <RiDeleteBin6Line
-                        size={25}
-                        className=" hover:text-[#e7c009]  cursor-pointer "
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+                ))}
+              </>
           </div>
         </div>
       </div>

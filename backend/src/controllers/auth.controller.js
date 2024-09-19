@@ -111,7 +111,7 @@ export const Signup = async (req, res) => {
     ) {
       return res.json({
         success: false,
-        message: "all field are must require",
+        message: "all field are must required",
       });
     }
 
@@ -218,7 +218,7 @@ export const login = async (req, res) => {
       };
 
       const token = jwt.sign(payload, process.env.JWT_SECRET, {
-        expiresIn: "1w",
+        expiresIn: "1d",
       });
       user.token = token;
       console.log("user.token is ", user.token);

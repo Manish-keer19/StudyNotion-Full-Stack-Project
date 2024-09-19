@@ -68,8 +68,9 @@ function CreateSubsection() {
   // const subsection = course.coursecontent[0].Subsection;
   // console.log("susection is ",subsection);
 
-  const CourseId = course._id;
-  // console.log("courseid is", CourseId);
+  const CourseId = course?._id;
+
+  // console.log("CourseId is", CourseId);
   // console.log("section are", sections);
 
   // Section creating function and update handler
@@ -210,8 +211,11 @@ function CreateSubsection() {
 
   const getCourseFullDetails = async () => {
     if (CourseId) {
+      console.log("CourseId: is ", CourseId);
       const res = await courseService.getCourseFullDetails(CourseId);
-      console.log("getCourseFullDetails is  ", res.data);
+      if (res) {
+        console.log("getCourseFullDetails is  ", res.data);
+      }
       // const data = res.data.toObject();
       const newCourse = {
         ...res.data,
@@ -578,7 +582,14 @@ function CreateSubsection() {
           <Button text="back" textcolor="white" color="#161d29" padding="p-1" />
         </div>
         <div className="w-[8vw] flex bg-[yellow] items-center  p-2 rounded-lg justify-center  text-[black] cursor-pointer">
-          <Button text="next" textcolor="black" padding="p-1" />
+          <Button
+            text="next"
+            textcolor="black"
+            padding="p-1"
+            onClick={() => {
+              dispatch(setStage(3));
+            }}
+          />
           <MdKeyboardArrowRight size={21} />
         </div>
       </div>

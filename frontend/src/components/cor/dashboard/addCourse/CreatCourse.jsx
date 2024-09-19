@@ -44,6 +44,10 @@ export default function CreatCourse() {
       setValue("price", course.price);
       setImagePreview(course.thumbnail);
       setValue("whatYouWillLearn", course.whatYouWillLearn);
+      setValue("courseThumbnail", course.thumbnail);
+      setValue("catagory", course.catagory);
+      setValue("tags", course.tags);
+      setValue("requrement_instruction", course.requrement_instruction);
     }
   }, [course, setValue]);
   const onsubmit = async (data) => {
@@ -57,7 +61,7 @@ export default function CreatCourse() {
     formData.append("catagory", data.catagory);
     formData.append("tags", data.tags);
     formData.append("whatYouWillLearn", data.whatYouWillLearn);
-    formData.append("requrement/instruction", data["requrement/instruction"]);
+    formData.append("requrement_instruction", data.requrement_instruction);
 
     // add the file in form ke data me
     if (selectedfile) {
@@ -109,129 +113,189 @@ export default function CreatCourse() {
     getallcatagory(token);
   }, [token]);
 
+  const handleUpdate = async () => {
+    console.log("handle update button clicked");
+
+    // const catagory = catagorys.filter(
+    //   (item, i) => item._id === getValues("catagory")
+    // );
+    // console.log("catagory name is", catagory.name);
+
+    const thumbnail = selectedfile;
+    console.log("thumbnail is bahar", thumbnail);
+    const updatedData = {
+      CourseId: course._id,
+      courseName: getValues("courseName"),
+      courseDetail: getValues("courseDetail"),
+      price: getValues("price"),
+      catagory: getValues("catagory"),
+      tags: getValues("tags"),
+      whatYouWillLearn: getValues("whatYouWillLearn"),
+      requrement_instruction: getValues("requrement_instruction"),
+      thumbnail: thumbnail,
+    };
+
+    console.log("updated data", updatedData);
+    try {
+      const res = await courseService.updateCourse(updatedData, token);
+      console.log("res is", res);
+      if (res) {
+        if (res.success) {
+          dispatch(setCourse(res.updatedCourse));
+          dispatch(setStage(2));
+        }
+      }
+    } catch (error) {
+      console.log("error while creating course", error);
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit(onsubmit)}>
-      <div className="text-[#999daa] w-[35vw] min-h-[130vh] ml-[2vw] bg-[#161d29] flex flex-col gap-5 p-[2vw] rounded-lg relative ">
-        <Input
-          label="course Title*"
-          placeholder={"enter the course title"}
-          width={"w-[90%]"}
-          color={"bg-[#2c333f]"}
-          ref={ref}
-          {...register("courseName")}
-        />
-        <Input
-          label={"Course short description*"}
-          placeholder={"enter description"}
-          width={"w-[90%]"}
-          height={"h-[16vh]"}
-          color={"bg-[#2c333f]"}
-          ref={ref}
-          {...register("courseDetail")}
-        />
-        <Input
-          label={"Price*"}
-          placeholder={"enter the price"}
-          type={"number"}
-          width={"w-[90%]"}
-          color={"bg-[#2c333f]"}
-          ref={ref}
-          {...register("price")}
-        />
+    <>
+      <form onSubmit={handleSubmit(onsubmit)}>
+        <div className="text-[#999daa] w-[35vw] min-h-[130vh] ml-[2vw] bg-[#161d29] flex flex-col gap-5 p-[2vw] rounded-lg relative ">
+          <Input
+            label="course Title*"
+            placeholder={"enter the course title"}
+            width={"w-[90%]"}
+            color={"bg-[#2c333f]"}
+            ref={ref}
+            {...register("courseName")}
+          />
+          <Input
+            label={"Course short description*"}
+            placeholder={"enter description"}
+            width={"w-[90%]"}
+            height={"h-[16vh]"}
+            color={"bg-[#2c333f]"}
+            ref={ref}
+            {...register("courseDetail")}
+          />
+          <Input
+            label={"Price*"}
+            placeholder={"enter the price"}
+            type={"number"}
+            width={"w-[90%]"}
+            color={"bg-[#2c333f]"}
+            ref={ref}
+            {...register("price")}
+          />
 
-        <label>Catagory</label>
-        <select
-          className=" text-[#999daa] border p-[1vw] rounded-sm w-[90%]  bg-[#2c333f] "
-          {...register("catagory")}
-        >
-          <option value="value" disabled selected>
-            choose a catagory
-          </option>
-          {catagorys.map((item, i) => (
-            <option key={i} value={item._id}>
-              {item.name}
-            </option>
-          ))}
-        </select>
-
-        <Input
-          label={"Tags*"}
-          placeholder={"choose a tag"}
-          type={"text"}
-          width={"w-[90%]"}
-          color={"bg-[#2c333f]"}
-          ref={ref}
-          {...register("tags")}
-        />
-
-        <div className="w-[90%] bg-[#2c333f] h-[24vh] border border-dotted rounded-md flex flex-col items-center justify-center">
-          <label
-            htmlFor="courseThumbnail"
-            className="w-full h-full flex flex-col items-center justify-center cursor-pointer"
+          <label>Catagory</label>
+          <select
+            className=" text-[#999daa] border p-[1vw] rounded-sm w-[90%]  bg-[#2c333f] "
+            {...register("catagory")}
           >
-            <FaCloudUploadAlt size={35} className="text-[#ffd60a]" />
-            <h1>
-              Drag and drop an image, or{" "}
-              <span className="text-[#ffd60a]">browse</span>
-            </h1>
-            <h1>Max 6MB each (12 MB for videos)</h1>
-            <input
-              id="courseThumbnail"
-              type="file"
-              accept="image/*"
-              {...register("courseThumbnail")}
-              onChange={handleImageChange}
-              className="hidden"
-            />
-            <div className="w-[80%] flex items-center gap-10 mt-[3vh] ml-[4vw]">
-              <h1>. Aspect ratio 16:9</h1>
-              <h1>. Recommended size 1024*576</h1>
-            </div>
-          </label>
-        </div>
+            <option value="value" disabled selected>
+              choose a catagory
+            </option>
+            {catagorys.map((item, i) => (
+              <option key={i} value={item._id}>
+                {item.name}
+              </option>
+            ))}
+          </select>
 
-        {imagePreview && (
-          <div className="mt-4">
-            <h2 className="text-[#ffd60a] mb-2">Image Preview:</h2>
-            <img
-              src={imagePreview}
-              alt="Course Thumbnail Preview"
-              className="w-[90%] h-auto rounded-md"
-            />
+          <Input
+            label={"Tags*"}
+            placeholder={"choose a tag"}
+            type={"text"}
+            width={"w-[90%]"}
+            color={"bg-[#2c333f]"}
+            ref={ref}
+            {...register("tags")}
+          />
+
+          <div className="w-[90%] bg-[#2c333f] h-[24vh] border border-dotted rounded-md flex flex-col items-center justify-center">
+            <label
+              htmlFor="courseThumbnail"
+              className="w-full h-full flex flex-col items-center justify-center cursor-pointer"
+            >
+              <FaCloudUploadAlt size={35} className="text-[#ffd60a]" />
+              <h1>
+                Drag and drop an image, or{" "}
+                <span className="text-[#ffd60a]">browse</span>
+              </h1>
+              <h1>Max 6MB each (12 MB for videos)</h1>
+              <input
+                id="courseThumbnail"
+                type="file"
+                accept="image/*"
+                {...register("courseThumbnail")}
+                onChange={handleImageChange}
+                className="hidden"
+              />
+              <div className="w-[80%] flex items-center gap-10 mt-[3vh] ml-[4vw]">
+                <h1>. Aspect ratio 16:9</h1>
+                <h1>. Recommended size 1024*576</h1>
+              </div>
+            </label>
           </div>
-        )}
 
-        <Input
-          label={"Benifit of course*"}
-          placeholder={"Enter benifit of the courses"}
-          type={"text"}
-          width={"w-[90%]"}
-          color={"bg-[#2c333f]"}
-          height={"h-[15vh]"}
-          ref={ref}
-          {...register("whatYouWillLearn")}
-        />
+          {imagePreview && (
+            <div className="mt-4">
+              <h2 className="text-[#ffd60a] mb-2">Image Preview:</h2>
+              <img
+                src={imagePreview}
+                alt="Course Thumbnail Preview"
+                className="w-[90%] h-auto rounded-md"
+              />
+            </div>
+          )}
 
-        <Input
-          label={"RequreMents/Instruction*"}
-          placeholder={"Enter benifit of the courses"}
-          type={"text"}
-          width={"w-[90%]"}
-          color={"bg-[#2c333f]"}
-          ref={ref}
-          {...register("requrement/instruction")}
-        />
-        {/* <button className="text-[#ffd60a] h-15 absolute bottom-[3vh] text-2xl font-medium">
+          <Input
+            label={"Benifit of course*"}
+            placeholder={"Enter benifit of the courses"}
+            type={"text"}
+            width={"w-[90%]"}
+            color={"bg-[#2c333f]"}
+            height={"h-[15vh]"}
+            ref={ref}
+            {...register("whatYouWillLearn")}
+          />
+
+          <Input
+            label={"RequreMents/Instruction*"}
+            placeholder={"Enter benifit of the courses"}
+            type={"text"}
+            width={"w-[90%]"}
+            color={"bg-[#2c333f]"}
+            ref={ref}
+            {...register("requrement_instruction")}
+          />
+          {/* <button className="text-[#ffd60a] h-15 absolute bottom-[3vh] text-2xl font-medium">
           Add
         </button> */}
-      </div>
-      <button
-        className="border p-4 bg-[yellow] text-black ml-[27vw] mt-[5vh] w-[8vw] rounded-md flex items-center font-bold justify-center"
-        type="submit"
-      >
-        Next
-        <MdNavigateNext size={30} />
-      </button>
-    </form>
+        </div>
+        {course && (
+          <button
+            className="border p-4 bg-[yellow] text-black ml-[27vw] mt-[5vh] w-[8vw] rounded-md flex items-center font-bold justify-center"
+            type="submit"
+          >
+            Next
+            <MdNavigateNext size={30} />
+          </button>
+        )}
+      </form>
+      {course && course.isCourseEdited && (
+        <div className=" flex w-[50vw] mt-[7vh] justify-center gap-4">
+           <button className="border p-2 bg-[#b1b183] text-black   rounded-md flex items-center font-bold justify-center"
+            onClick={()=>{
+              dispatch(setStage(2))
+            }}
+           >
+            continue without Change
+          </button>
+          <button
+            className="border p-4 bg-[yellow] text-black rounded-md flex items-center font-bold justify-center"
+            onClick={() => handleUpdate()}
+          >
+            Update kar don
+          </button>
+
+         
+        </div>
+      )}
+    </>
   );
 }

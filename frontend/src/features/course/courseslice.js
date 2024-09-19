@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 
 const initialState = {
   stage: localStorage.getItem("stage") || 1,
-  course: JSON.parse(localStorage.getItem("course")) || null,
+  course: JSON.parse(localStorage.getItem("course")) || [],
   allCourses: JSON.parse(localStorage.getItem("allCourses")) || [],
   sections: JSON.parse(localStorage.getItem("sections"))||[],
 };
@@ -17,21 +17,17 @@ export const courseSlice = createSlice({
       if (action.payload) {
         console.log("action.payload in course slice is ",action.payload);
         localStorage.setItem("course", JSON.stringify(action.payload));
+        console.log("course in courseslice", state.course);
       }
     },
     removeAllCourse: (state, action) => {
       state.course = null;
-      localStorage.removeItem("course");
+      localStorage.removeItem("allCourses");
     },
     removeCourse: (state, action) => {
-      const newCourse = state.course.filter(
-        (item) => item.id != action.payload
-      );
-      console.log("new course is ", newCourse);
-      if (newCourse) {
-        (state.course = newCourse),
-          localStorage.setItem("course", JSON.stringify(newCourse));
-      }
+      localStorage.removeItem("course");
+       
+
     },
     setStage: (state, action) => {
       state.stage = action.payload;
